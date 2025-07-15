@@ -3,7 +3,8 @@ $uuid = [guid]::NewGuid().ToString()
 
 # Download repo as a zip to the temp folder
 $temp = Join-Path -Path $env:TEMP -ChildPath $uuid
-$zipUrl = "https://github.com/PowerPCFan/pc-flipper-windows-script/archive/refs/heads/main.zip"
+# $zipUrl = "https://github.com/PowerPCFan/pc-flipper-windows-script/archive/refs/heads/main.zip"
+$zipUrl = "https://github.com/PowerPCFan/pc-flipper-windows-script/archive/refs/heads/python-refactor.zip"
 $downloadPath = Join-Path -Path $temp -ChildPath "pc-flipper-windows-script.zip"
 Invoke-WebRequest -Uri $zipUrl -OutFile $downloadPath
 
