@@ -1,2 +1,6 @@
 /.vscode
-nv*.ps1
+/venv
+*.pyc
+**/__pycache__/
+/temp
+/*venv*

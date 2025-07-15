@@ -1,4 +1,4 @@
-
+# This README has not yet been updated for the Python refactor
 # PC Flipper Windows Script
 I made this script to make it easier for PC flippers to prepare Windows on builds being prepared for sale.  
 Even if you're not a PC flipper you can still use it for your own computer to install drivers, install apps, and more!

@@ -1,23 +1,24 @@
-$mainFolderPath = "$env:temp\pc-flipper-script"
-$scriptDownloadPath = "bin"
+# create randomized uuid
+$uuid = [guid]::NewGuid().ToString()
 
-# Deletes old files to avoid conflicts if you've run the script before.
-if (Test-Path -Path "$mainFolderPath") { 
-    Remove-Item -Recurse -Force -Confirm:$false -Path "$mainFolderPath" 
-}
+# Download repo as a zip to the temp folder
+$temp = Join-Path -Path $env:TEMP -ChildPath $uuid
+$zipUrl = "https://github.com/PowerPCFan/pc-flipper-windows-script/archive/refs/heads/main.zip"
+$downloadPath = Join-Path -Path $temp -ChildPath "pc-flipper-windows-script.zip"
+Invoke-WebRequest -Uri $zipUrl -OutFile $downloadPath
 
-# Creates new directory for files and scripts
-New-Item -Type Directory -Path "$mainFolderPath" | Out-Null
+# Extract the zip file
+$extractPath = Join-Path -Path $temp -ChildPath "pc-flipper-windows-script"
+Expand-Archive -Path $downloadPath -DestinationPath $extractPath -Force
 
-# Sets location to the script folder
-Set-Location -Path "$mainFolderPath"
+# enter the directory where the script files are
+Set-Location -Path $extractPath
 
-# SCRIPT DOWNLOADS
-New-Item -Type Directory -Path "$scriptDownloadPath" | Out-Null
-# Downloads main script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/PowerPCFan/pc-flipper-windows-script/refs/heads/main/pc-flip-preparation-script.ps1" -OutFile "$scriptDownloadPath\pc-flip-preparation-script.ps1"
+# extract the Python 3.13.5 Windows x64 embeddable package which has all the dependencies preinstalled
+Expand-Archive -Path "python.zip" -DestinationPath "python" -Force
 
-# Changes PowerShell's execution policy and run script
-# Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
-# Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser -Force
-powershell.exe -ExecutionPolicy Bypass -File ".\bin\pc-flip-preparation-script.ps1"
+# run script using python.exe in embeddable package
+$pythonPath = Join-Path -Path $extractPath -ChildPath "python\python.exe"
+$scriptPath = Join-Path -Path $extractPath -ChildPath "main.py"
+
+& $pythonPath $scriptPath
