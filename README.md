@@ -1,4 +1,3 @@
-# This README has not yet been updated for the Python refactor
 # PC Flipper Windows Script
 I made this script to make it easier for PC flippers to prepare Windows on builds being prepared for sale.  
 Even if you're not a PC flipper you can still use it for your own computer to install drivers, install apps, and more!
@@ -6,13 +5,9 @@ Even if you're not a PC flipper you can still use it for your own computer to in
 
 # Execution
 
-1. Type "PowerShell" into the Start Menu.
-2. Find the result that says "Windows PowerShell" or similar, right-click it, and select "Run as administrator". 
-3. Execute the oneliner command: `irm bit.ly/pcflipperwindowsscript | iex`  
-
-**Having issues with the command?** Open PowerShell as administrator and try this command: `powershell.exe -ExecutionPolicy Bypass -Command "irm https://bit.ly/pcflipperwindowsscript | iex" `
-
-This will run the script. Prerequisites may need to be installed at the beginning of script execution, so please be patient while you wait for the script to start. 
+1. Go to the [Releases](https://github.com/PowerPCFan/pc-flipper-windows-script/releases/latest) page.
+2. From the latest release, download the file called `pc-flipper-windows-script.exe`. 
+3. Double-click the file to run it, and accept the prompt to run as administrator. That's all!
 
 
 # What it does:
@@ -27,7 +22,7 @@ Examples of what it can do:
 - Activate Windows if not already activated
 - Run an optional FurMark stress test to verify GPU stability
 
-Every feature is optional, and you can use the simple "Main Menu" to select exactly what you want to do with checkboxes.
+Every feature is optional, and you can use the simple and user friendly "Script Options" window that shows on startup to select exactly what you want to do.
 
 
 # Issues
