@@ -1,3 +1,5 @@
+$ProgressPreference = 'SilentlyContinue'  # this makes files download way faster
+
 # create randomized uuid
 $uuid = [guid]::NewGuid().ToString()
 
@@ -51,7 +53,7 @@ $newScriptFilesDir = (Get-Location).Path
 Expand-Archive -Path (Join-Path -Path $newScriptFilesDir -ChildPath "python.zip") -DestinationPath "python" -Force
 
 # run script using python.exe in embeddable package
-$pythonPath = Join-Path -Path $newScriptFilesDir -ChildPath "python" -AdditionalChildPath "python","python.exe"
+$pythonPath = [System.IO.Path]::Combine($newScriptFilesDir, "python", "python", "python.exe")  # use System.IO.Path instead of Join-Path to ensure readability and PowerShell 5 compatibility
 $scriptPath = Join-Path -Path $newScriptFilesDir -ChildPath "main.py"
 
 & $pythonPath $scriptPath
