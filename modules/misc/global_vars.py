@@ -1,7 +1,5 @@
 import tempfile
 import os
-import re as regexp
-import subprocess
 import wmi
 
 # pylance REALLY hates this
@@ -29,16 +27,7 @@ USERPROFILE: str = os.getenv("USERPROFILE", os.path.expanduser("~"))
 # Script variables
 SCRIPT_TEMP: str = tempfile.mkdtemp()  # temporary directory for script files
 
-systeminfo: str = subprocess.run(
-    ["systeminfo"],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.STDOUT,
-    text=True,
-    shell=True
-).stdout
-
-windows_os_version_match: regexp.Match[str] | None = regexp.search(r"^OS Name:\s+(.+)", systeminfo, regexp.MULTILINE)
-WINDOWS_OS_VERSION: str = windows_os_version_match.group(1) if windows_os_version_match else "Unknown"
+WINDOWS_OS_VERSION: str = computer.Win32_OperatingSystem()[0].Caption
 
 OS_IS_64BIT: bool = environment.Is64BitOperatingSystem
 

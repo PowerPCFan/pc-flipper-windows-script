@@ -3,6 +3,7 @@ import requests
 import subprocess
 import time
 import modules.misc.utils as utils
+import modules.drivers.nvidia_gpu_drivers.main as nvidia_drivers
 import modules.misc.global_vars as global_vars
 import urllib.parse
 from modules.color.ansi_codes import RED, RESET, CYAN, GREEN, YELLOW
@@ -13,8 +14,10 @@ class GPUDrivers:
 
         self.amd_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "amd"))
         self.intel_arc_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "intel_arc"))
-        
-        
+        self.nvidia_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "nvidia"))
+
+
+
         self.amd_driver_download_link: str = ""
         try:
             link: str = requests.get("https://raw.githubusercontent.com/nunodxxd/AMD-Software-Adrenalin/refs/heads/main/configs/config.json").json()["driver_links"]["stable"]
@@ -22,13 +25,46 @@ class GPUDrivers:
             if hostname is not None and hostname.endswith("amd.com"): self.amd_driver_download_link = link
             else: raise ValueError("non-AMD domain detected, falling back to version 25.6.1 due to malware risk with non AMD domain")  # i know this line won't be printed but i figured i'd still describe what's happening
         except Exception: self.amd_driver_download_link = "https://drivers.amd.com/drivers/installer/25.10/whql/amd-software-adrenalin-edition-25.6.1-minimalsetup-250602_web.exe"
+        
         self.intel_driver_download_link: str = requests.get("https://raw.githubusercontent.com/PowerPCFan/Intel-Arc-GPU-Drivers/refs/heads/main/configs/link.txt").text.strip()
 
     def install_nvidia_drivers(self):
-        print(
-            f"{CYAN}Nvidia GPU detected. I am currently working on a better solution for Nvidia drivers, but it is not production ready yet.{RESET}\n"
-            f"{CYAN}Please download the latest drivers from the Nvidia website.{RESET}"
-        )
+        print(f"{CYAN}Nvidia GPU detected.{RESET}")
+        print(f"A window will pop up asking you to select your GPU, OS, language, and the driver you'd like to install.")
+        
+        result = nvidia_drivers.main()
+        
+        if result is None:
+            print(f"{YELLOW}Warning: No driver was selected. Skipping Nvidia driver installation...{RESET}")
+        else:
+            name: str | None = result.get("name")
+            version: str | None = result.get("version")
+            download_link: str | None = result.get("download_url")
+            
+            if download_link:
+                print(f"{CYAN}Installing {name if name else 'Nvidia GPU Driver'} version {version if version else 'unknown'}...{RESET}")
+                
+                nvidia_driver = os.path.join(self.nvidia_driver_download_path, "setup.exe")
+        
+                utils.download_large_file(
+                    url = download_link,
+                    destination = nvidia_driver,
+                    timeout = 10
+                )
+                
+                print(f"{GREEN}Nvidia GPU drivers successfully downloaded.{RESET}")
+
+                if os.path.exists(nvidia_driver):
+                    output = subprocess.run([nvidia_driver])
+                    
+                    if output.returncode == 0:
+                        print(f"{GREEN}Nvidia GPU drivers installed successfully.{RESET}")
+                    else:
+                        print(f"{YELLOW}Warning: The Nvidia GPU driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
+                else:
+                    print(f"{RED}Error: Nvidia driver installer not found at {nvidia_driver}.{RESET}")
+            else:
+                print(f"{RED}Error: Download link not found for selected driver. Skipping Nvidia driver installation...{RESET}")
     
     def install_amd_drivers(self):
         print(f"{CYAN}AMD GPU detected. Drivers downloading and installing...{RESET}")
