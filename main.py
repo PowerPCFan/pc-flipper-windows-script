@@ -5,7 +5,7 @@ import modules.drivers                                as drivers
 import modules.misc.global_vars                       as global_vars
 import modules.tweaks.windows_tweaks                  as windows_tweaks
 import modules.ui                                     as ui
-import modules.tests                                  as tests
+import modules.startup_tests                          as startup_tests
 import modules.windows_activation.activate_windows    as activate_windows
 import modules.apps                                   as apps
 import modules.furmark                                as furmark
@@ -58,15 +58,15 @@ def cleanup():
 
 def main():
     print("Checking for administrator privileges...")
-    tests.administrator.test_admin_privileges()
+    startup_tests.administrator.test_admin_privileges()
     
     print("Checking internet connectivity...")
-    tests.internet.test_internet()
+    startup_tests.internet.test_internet()
     
     print(f"{GREEN}Checks successfully completed.{RESET}")
 
     print("Installing and checking prerequisites...")
-    tests.prerequisites.check_prerequisites()
+    startup_tests.prerequisites.check_prerequisites()
 
     tasks = ui.show_script_options_window()
     invoke_tasks(tasks=tasks)
