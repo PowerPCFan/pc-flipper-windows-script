@@ -3,7 +3,7 @@ import requests
 import subprocess
 import time
 import modules.misc.utils as utils
-import modules.drivers.nvidia_gpu_drivers.main as nvidia_drivers
+import modules.drivers.nvidia_gpu_drivers as nvidia_drivers
 import modules.misc.global_vars as global_vars
 import urllib.parse
 from modules.color.ansi_codes import RED, RESET, CYAN, GREEN, YELLOW

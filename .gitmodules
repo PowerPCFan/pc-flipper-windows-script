@@ -1,3 +1,0 @@
-[submodule "modules/drivers/nvidia_gpu_drivers"]
-	path = modules/drivers/nvidia_gpu_drivers
-	url = https://github.com/PowerPCFan/Nvidia-GPU-Drivers.git
