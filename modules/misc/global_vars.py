@@ -35,10 +35,11 @@ BOARD: str = computer.Win32_BaseBoard()[0].Product
 MANUFACTURER: str = computer.Win32_BaseBoard()[0].Manufacturer
 FULL_MOTHERBOARD_NAME: str = f"{MANUFACTURER} {BOARD}"
 
+GPU: str = "Unknown"
 for video_controller in computer.Win32_VideoController():
     if video_controller.Status == "OK" and video_controller.Availability == 3:
-        GPU: str = video_controller.Name
-        
+        GPU = video_controller.Name
+
 CPU: str = computer.Win32_Processor()[0].Name
 
 

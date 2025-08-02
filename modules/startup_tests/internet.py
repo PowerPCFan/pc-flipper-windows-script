@@ -4,6 +4,7 @@ import subprocess
 import modules.misc.utils as utils
 from modules.color.ansi_codes import RESET, RED, GREEN
 
+
 def has_network(ips, count=1):
     for ip in ips:
         try:
@@ -18,6 +19,7 @@ def has_network(ips, count=1):
             continue
     return False
 
+
 def has_dns(domains):
     for domain in domains:
         try:
@@ -27,22 +29,23 @@ def has_dns(domains):
             continue
     return False
 
+
 def test_internet():
     MY_IPS = [
-        "8.8.8.8", 
-        "1.1.1.1", 
-        "9.9.9.9", 
-        "8.8.4.4", 
-        "1.0.0.1"
+        "8.8.8.8",
+        "1.1.1.1",
+        "9.9.9.9",
+        # "8.8.4.4",
+        # "1.0.0.1"
     ]
-    
+
     MY_DOMAINS = [
-        "www.github.com", 
-        "www.google.com", 
-        "www.cloudflare.com", 
-        "www.microsoft.com"
+        "www.github.com",
+        "www.google.com",
+        "www.cloudflare.com",
+        # "www.microsoft.com"
     ]
-    
+
     if not has_network(ips=MY_IPS, count=2):
         utils.clear_screen()
         print(f"{RED}{'=' * 56}{RESET}")
@@ -51,7 +54,7 @@ def test_internet():
         print(f"{RED}{'=' * 56}{RESET}")
         input(f"{GREEN}\nPress any key to exit...{RESET}")
         sys.exit(1)
-    
+
     if not has_dns(domains=MY_DOMAINS):
         utils.clear_screen()
         print(f"{RED}{'=' * 56}{RESET}")

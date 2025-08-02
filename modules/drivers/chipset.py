@@ -35,6 +35,9 @@ class ChipsetDrivers:
             output = subprocess.run([driver_path])
             
             if output.returncode == 0:
+                while utils.process_is_running("chipset_amd.exe") or utils.process_is_running("amd_chipset_drivers.exe") or utils.process_is_running("Setup.exe"):
+                    time.sleep(5)
+                
                 print(f"{GREEN}AMD chipset drivers installed successfully.{RESET}")
             else:
                 print(f"{YELLOW}Warning: The AMD chipset driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")

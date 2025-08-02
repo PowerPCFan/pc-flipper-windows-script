@@ -8,13 +8,21 @@ import modules.misc.global_vars as global_vars
 import urllib.parse
 from modules.color.ansi_codes import RED, RESET, CYAN, GREEN, YELLOW
 
+
 class GPUDrivers:
     def __init__(self) -> None:
-        self.driver_download_path: str = utils.ensure_dir_exists(os.path.join(global_vars.SCRIPT_TEMP, "drivers", "gpu"))
+        self.driver_download_path: str = utils.ensure_dir_exists(
+            os.path.join(global_vars.SCRIPT_TEMP, "drivers", "gpu"))
 
-        self.amd_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "amd"))
-        self.intel_arc_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "intel_arc"))
-        self.nvidia_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "nvidia"))
+        self.amd_driver_download_path: str = utils.ensure_dir_exists(
+            os.path.join(self.driver_download_path, "amd")
+        )
+        self.intel_arc_driver_download_path: str = utils.ensure_dir_exists(
+            os.path.join(self.driver_download_path, "intel_arc")
+        )
+        self.nvidia_driver_download_path: str = utils.ensure_dir_exists(
+            os.path.join(self.driver_download_path, "nvidia")
+        )
 
 
 
@@ -22,9 +30,12 @@ class GPUDrivers:
         try:
             link: str = requests.get("https://raw.githubusercontent.com/nunodxxd/AMD-Software-Adrenalin/refs/heads/main/configs/config.json").json()["driver_links"]["stable"]
             hostname: str | None = urllib.parse.urlparse(link).hostname
-            if hostname is not None and hostname.endswith("amd.com"): self.amd_driver_download_link = link
-            else: raise ValueError("non-AMD domain detected, falling back to version 25.6.1 due to malware risk with non AMD domain")  # i know this line won't be printed but i figured i'd still describe what's happening
-        except Exception: self.amd_driver_download_link = "https://drivers.amd.com/drivers/installer/25.10/whql/amd-software-adrenalin-edition-25.6.1-minimalsetup-250602_web.exe"
+            if hostname is not None and hostname.endswith("amd.com"):
+                self.amd_driver_download_link = link
+            else:
+                raise ValueError("non-AMD domain detected, falling back to version 25.6.1 due to malware risk with non AMD domain")  # i know this line won't be printed but i figured i'd still describe what's happening
+        except Exception:
+            self.amd_driver_download_link = "https://drivers.amd.com/drivers/installer/25.10/whql/amd-software-adrenalin-edition-25.6.1-minimalsetup-250602_web.exe"
         
         self.intel_driver_download_link: str = requests.get("https://raw.githubusercontent.com/PowerPCFan/Intel-Arc-GPU-Drivers/refs/heads/main/configs/link.txt").text.strip()
 
@@ -86,12 +97,15 @@ class GPUDrivers:
             output = subprocess.run([amd_drivers])
             
             if output.returncode == 0:
+                while utils.process_is_running("amdsoftwareinstaller.exe"):
+                    time.sleep(5)
+                
                 print(f"{GREEN}AMD GPU drivers installed successfully.{RESET}")
             else:
-                print(f"{YELLOW}Warning: The AMD GPU driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
+                print(f"{YELLOW}Warning: The AMD GPU driver installer closed with nonzero exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
         else:
             print(f"{RED}Error: AMD driver installer not found at {amd_drivers}.{RESET}")
-            
+
     def install_intel_arc_drivers(self):
         print(f"{CYAN}Intel Arc GPU detected. Drivers downloading and installing...{RESET}")
         

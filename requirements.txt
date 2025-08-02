@@ -3,6 +3,7 @@ cffi==1.17.1
 charset-normalizer==3.4.2
 clr_loader==0.2.7.post0
 idna==3.10
+psutil==7.0.0
 pycparser==2.22
 PyQt6==6.9.1
 PyQt6-Qt6==6.9.1

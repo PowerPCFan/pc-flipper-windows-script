@@ -1,7 +1,5 @@
-# import os
 import re as regexp
 import subprocess
-# import modules.misc.global_vars as global_vars
 from modules.winget import Winget, WingetTools
 from modules.color.ansi_codes import RESET, RED, GREEN, CYAN, YELLOW
 
@@ -11,20 +9,19 @@ def check_prerequisites():
     # WinGet
     try:
         output = subprocess.run(["winget", "--version"], check=True, capture_output=True, text=True)
-        
         winget_version = output.stdout.strip().strip("\n")
-        
+
         # if this prints then that means the try-except wasnt triggered so winget must be installed
         print(f"{GREEN}WinGet is already installed.{RESET}")
 
         regex = r"v(\d+)\.(\d+)"
         match: regexp.Match[str] | None = regexp.match(regex, output.stdout)
-        
+
         # Check if version is less than 1.6
         if match:
             major = int(match.group(1))
             minor = int(match.group(2))
-            
+
             if major < 1 or (major == 1 and minor < 6):
                 print(f"{YELLOW}WinGet version {winget_version} is outdated. Installing latest version...{RESET}")
                 print(f"{CYAN}This can take a while. Please be patient.{RESET}")
@@ -63,7 +60,7 @@ def check_prerequisites():
         if test_result["Success"]:
             print(f"{GREEN}Fix was successful!{RESET}")
             return
-        
+
         # If first fix failed, try the second fix
         if test_result["WingetSourceBug"]:
             print("Error detected again. Applying alternative fix...")
@@ -71,11 +68,11 @@ def check_prerequisites():
             print(f"{GREEN}Alternative fix applied. Testing WinGet...{RESET}")
 
             test_result = WingetTools().test_winget()
-            
+
             if test_result["Success"]:
                 print(f"{GREEN}Alternative fix was successful!{RESET}")
                 return
-            
+
             # If second fix also failed
             if test_result["WingetSourceBug"]:
                 print(f"{RED}All repair attempts failed. Apps may not install properly.{RESET}")
@@ -88,7 +85,7 @@ def check_prerequisites():
 
     # cURL
     # commented out because curl isnt needed anymore
-    
+
     # if os.path.exists(os.path.join(global_vars.SYSTEM32, "curl.exe")):
     #     print(f"{GREEN}cURL is already installed.{RESET}")
     # else:

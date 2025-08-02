@@ -1,11 +1,12 @@
 import subprocess
 from modules.color.ansi_codes import RESET, RED, GREEN, YELLOW
 
+
 def activate(key: str):
     if key is not None:
         try:
             print("Activating Windows using product key...")
-            
+
             # I could do this in Python with the win32com or wmi module, but it's easier to just not
             output = subprocess.run(
                 args=[
@@ -17,11 +18,11 @@ def activate(key: str):
                 capture_output=True,
                 text=True
             )
-            
+
             # this is the most terrible way to check for errors but honestly who cares, it works
             if "error" in output.stderr.lower() or "error" in output.stdout.lower():
                 raise Exception("Unknown Error")
-            
+
             print(f"{GREEN}Success! Windows was activated using your product key.{RESET}")
         except Exception as e:
             print(f"{RED}Error: There was an issue activating Windows: {e} {RESET}")

@@ -8,20 +8,20 @@ from modules.color.ansi_codes import RESET, RED
 class WingetTools:
     def fix_winget(self):
         subprocess.run([
-            "winget", 
-            "source", 
-            "remove", 
-            "-n", 
+            "winget",
+            "source",
+            "remove",
+            "-n",
             '"winget"'
         ])
-        
+
         subprocess.run([
-            "winget", 
-            "source", 
-            "add", 
-            "-n", 
+            "winget",
+            "source",
+            "add",
+            "-n",
             '"winget"',
-            "-a", 
+            "-a",
             '"https://cdn.winget.microsoft.com/cache"'
         ])
 
@@ -32,7 +32,7 @@ class WingetTools:
             file_path = os.path.join(path, "winget_installer.msixbundle")
 
             utils.download_large_file(url=url, destination=file_path, chunk_size=8192)
-            
+
             subprocess.run(
                 args=[
                     "powershell.exe",
@@ -43,7 +43,7 @@ class WingetTools:
             )
         except Exception as e:
             print(f"{RED}Error installing Winget: {e}{RESET}")
-            
+
     def test_winget(self) -> dict:
         # original powershell function:
 

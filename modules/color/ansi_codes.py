@@ -12,7 +12,8 @@ def enable_ansi():
             return False
         new_mode = mode.value | 0x0004
         return kernel32.SetConsoleMode(handle, new_mode) != 0
-    except Exception: return False
+    except Exception: 
+        return False
 
 def supports_ansi(vt_enabled):
     if vt_enabled:
@@ -28,7 +29,8 @@ def supports_ansi(vt_enabled):
     )
 
 @functools.lru_cache(maxsize=None)
-def ansi_supported(): return supports_ansi(enable_ansi())
+def ansi_supported():
+    return supports_ansi(enable_ansi())
 
 def get_colors(ansi_is_supported):
     codes = {

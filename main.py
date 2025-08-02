@@ -29,12 +29,18 @@ def invoke_tasks(tasks: dict[str, str | bool | dict]):
 
     if tasks["activate_windows"]:
         if tasks["activate_windows_massgrave"]:
-            activate_windows.activate(method=WindowsActivationMethod.MASSGRAVE, activation_key=None)
+            activate_windows.activate(
+                method=WindowsActivationMethod.MASSGRAVE,
+                activation_key=None
+            )
         elif tasks["activate_windows_key"]:
             product_key = tasks["windows_product_key"]
 
-            if type(product_key) == str:
-                activate_windows.activate(method=WindowsActivationMethod.ACTIVATION_KEY, activation_key=product_key)
+            if isinstance(product_key, str):
+                activate_windows.activate(
+                    method=WindowsActivationMethod.ACTIVATION_KEY,
+                    activation_key=product_key
+                )
             else:
                 raise ValueError("Your Windows Product Key is not a string. Please check your input.")
         else:
@@ -47,22 +53,24 @@ def invoke_tasks(tasks: dict[str, str | bool | dict]):
         duration = tasks["furmark_duration"]
         resolution = tasks["furmark_resolution"]
         anti_aliasing = tasks["furmark_anti_aliasing"]
-        
-        if type(duration) == str and type(resolution) == str and type(anti_aliasing) == str:
+
+        if isinstance(duration, str) and isinstance(resolution, str) and isinstance(anti_aliasing, str):
             furmark.run_furmark_test(duration=int(duration), resolution=resolution, anti_aliasing=anti_aliasing)
         else:
             raise ValueError("The FurMark test parameters specified are not valid strings. This is likely an issue with the script and not your input.")
 
+
 def cleanup():
     utils.remove_if_exists(global_vars.SCRIPT_TEMP)
+
 
 def main():
     print("Checking for administrator privileges...")
     startup_tests.administrator.test_admin_privileges()
-    
+
     print("Checking internet connectivity...")
     startup_tests.internet.test_internet()
-    
+
     print(f"{GREEN}Checks successfully completed.{RESET}")
 
     print("Installing and checking prerequisites...")
@@ -73,20 +81,26 @@ def main():
 
     utils.popup_message(title="Script Complete", message="The script has finished running!\nPlease give it a star on GitHub!\nCreated by PowerPCFan")
 
+
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        # handle keyboardinterrupt for a smooth exit without some long traceback about whatever got interrupted
+        # handle keyboardinterrupt for a smooth exit
+        # without a long traceback about whatever got interrupted
         print(f"{YELLOW}\nExiting...{RESET}")
         sys.exit(0)
     except Exception as e:
-        # catch all exceptions not caught by a more specific try-except, print a user-friendly error, and exit with status code 1
-        # note to self - if you don't want the script to exit after an error, wrap it in its own try-except block that doesn't have a sys.exit call
-        
+        # catch all exceptions not caught by a more specific try-except, 
+        # print a user-friendly error, 
+        # and exit with status code 1
+
+        # note to self - if you don't want the script to exit after an error,
+        # wrap it in its own try-except block that doesn't have a sys.exit call
+
         error_message = "ERROR: An unexpected error occurred:"
         dashes = '-' * len(error_message)
-        
+
         print(
             f"{dashes}\n"
             f"{RED}{error_message}{RESET}\n"

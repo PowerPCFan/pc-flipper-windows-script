@@ -1,11 +1,13 @@
 import shutil
+import psutil
 import os
+import zipfile
 import readchar
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
 import requests
-from typing import Callable
+from typing import Callable, Iterator
 from modules.misc.enums import OpenModes
 from modules.color.ansi_codes import RESET, RED
 
@@ -142,3 +144,19 @@ def popup_message(title: str, message: str) -> None:
     root.withdraw()
     messagebox.showinfo(title, message)
     root.destroy()
+
+def process_is_running(process_name: str) -> bool:
+    processes: Iterator[psutil.Process] = psutil.process_iter(['name'])
+    for process in processes:
+        running_process: str = process.info.get('name', 'unknown')
+        if running_process.lower() == process_name.lower():
+            return True
+    return False
+
+def unzip_file(infile: str, outfile: str | None = None) -> str:
+    if outfile is None:
+        outfile = os.path.join(os.path.dirname(infile), os.path.splitext(os.path.basename(infile))[0])
+    
+    with zipfile.ZipFile(infile, 'r') as zip_ref:
+        zip_ref.extractall(outfile)
+    return outfile
