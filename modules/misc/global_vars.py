@@ -1,6 +1,10 @@
 import tempfile
 import os
+import requests
 import wmi
+import socket
+import platformdirs
+import psutil
 
 # pylance REALLY hates this
 import clr  # type: ignore
@@ -12,6 +16,11 @@ import System  # type: ignore
 computer = wmi.WMI()
 environment = System.Environment
 
+Win32_ComputerSystem = computer.Win32_ComputerSystem()[0]
+Win32_OperatingSystem = computer.Win32_OperatingSystem()[0]
+Win32_BaseBoard = computer.Win32_BaseBoard()[0]
+Win32_Processor = computer.Win32_Processor()[0]
+Win32_LogicalDisk = computer.Win32_LogicalDisk()[0]
 
 
 # Windows environment variables
@@ -24,15 +33,23 @@ USERPROFILE: str = os.getenv("USERPROFILE", os.path.expanduser("~"))
 
 
 
+# Current user and system variables/information
+CURRENT_USER_DESKTOP: str = platformdirs.user_desktop_dir()  # i spent a long time finding this solution because just using ~/Desktop isn't reliable due to OneDrive, different languages, etc
+PC_NAME: str = Win32_ComputerSystem.Name
+INSTALL_TIME: str = Win32_OperatingSystem.InstallDate
+WINDOWS_OS_VERSION: str = Win32_OperatingSystem.Caption
+LOCAL_IP: str = socket.gethostbyname(socket.gethostname())
+PUBLIC_IP: str = requests.get("https://checkip.amazonaws.com/").text.strip()
+
+
+
 # Script variables
 SCRIPT_TEMP: str = tempfile.mkdtemp()  # temporary directory for script files
 
-WINDOWS_OS_VERSION: str = computer.Win32_OperatingSystem()[0].Caption
-
 OS_IS_64BIT: bool = environment.Is64BitOperatingSystem
 
-BOARD: str = computer.Win32_BaseBoard()[0].Product
-MANUFACTURER: str = computer.Win32_BaseBoard()[0].Manufacturer
+BOARD: str = Win32_BaseBoard.Product
+MANUFACTURER: str = Win32_BaseBoard.Manufacturer
 FULL_MOTHERBOARD_NAME: str = f"{MANUFACTURER} {BOARD}"
 
 GPU: str = "Unknown"
@@ -40,7 +57,11 @@ for video_controller in computer.Win32_VideoController():
     if video_controller.Status == "OK" and video_controller.Availability == 3:
         GPU = video_controller.Name
 
-CPU: str = computer.Win32_Processor()[0].Name
+CPU: str = Win32_Processor.Name
+
+RAM: str = f"{str(round(psutil.virtual_memory().total / (1024 ** 3), 2))} GB"
+
+STORAGE: str = f"{(int(Win32_LogicalDisk.Size) / (1024**3)):.2f} GB"
 
 
 

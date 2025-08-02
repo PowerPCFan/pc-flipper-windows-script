@@ -1,15 +1,19 @@
 import shutil
 import psutil
 import os
+import win32api
+import win32con
 import zipfile
+import re as regexp
 import readchar
 import tkinter as tk
-from tkinter import messagebox
 import subprocess
 import requests
 from typing import Callable, Iterator
+from datetime import datetime, timedelta, timezone
+from tkinter import messagebox
 from modules.misc.enums import OpenModes
-from modules.color.ansi_codes import RESET, RED
+from modules.color.ansi_codes import RESET, RED, YELLOW
 
 def remove_if_exists(path: str):
     """
@@ -160,3 +164,24 @@ def unzip_file(infile: str, outfile: str | None = None) -> str:
     with zipfile.ZipFile(infile, 'r') as zip_ref:
         zip_ref.extractall(outfile)
     return outfile
+
+def parse_windows_timestamp(ts: str) -> datetime:
+    match = regexp.fullmatch(r"(\d{14})\.(\d+)([-+]\d{3,4})", ts)
+    if not match:
+        print(f"{YELLOW}Invalid timestamp format{RESET}")
+        return datetime(1970, 1, 1, tzinfo=timezone.utc)  # return the unix epoch as a fallback
+
+    dt_str, micros_str, offset_str = match.groups()
+
+    base_dt = datetime.strptime(dt_str, "%Y%m%d%H%M%S")
+    microseconds = int(micros_str.ljust(6, '0')[:6])
+    base_dt = base_dt.replace(microsecond=microseconds)
+
+    offset_minutes = int(offset_str)
+    tz = timezone(timedelta(minutes=offset_minutes))
+
+    return base_dt.replace(tzinfo=tz)
+
+def get_display_info() -> str:
+    dm = win32api.EnumDisplaySettings(None, win32con.ENUM_CURRENT_SETTINGS)
+    return f"{dm.PelsWidth}x{dm.PelsHeight} @ {dm.DisplayFrequency}Hz"

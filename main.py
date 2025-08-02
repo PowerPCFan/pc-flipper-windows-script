@@ -9,6 +9,7 @@ import modules.startup_tests                          as startup_tests
 import modules.windows_activation.activate_windows    as activate_windows
 import modules.apps                                   as apps
 import modules.furmark                                as furmark
+import modules.spec_sheet.spec_sheet                  as spec_sheet
 
 from modules.color.ansi_codes                         import RESET, RED, YELLOW, GREEN
 from modules.misc.enums                               import WindowsActivationMethod
@@ -26,6 +27,9 @@ def invoke_tasks(tasks: dict[str, str | bool | dict]):
     if tasks["run_windows_tweaks"]:
         tweaks = windows_tweaks.WindowsTweaks()
         tweaks.run()
+
+    if tasks["save_spec_sheet"]:
+        spec_sheet.save()
 
     if tasks["activate_windows"]:
         if tasks["activate_windows_massgrave"]:
