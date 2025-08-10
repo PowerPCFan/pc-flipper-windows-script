@@ -3,16 +3,36 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, 
     QHBoxLayout, QLabel, QCheckBox, QPushButton, 
     QScrollArea, QFrame, QLineEdit, QRadioButton, 
-    QButtonGroup, QComboBox
+    QButtonGroup, QComboBox, QMessageBox
 )
 from PyQt6.QtCore import QRect
 from PyQt6.QtGui import QFont, QScreen
-import re
+import re as regexp
+
+# i hate this code
 
 class ScriptOptionsWindow(QMainWindow):
     def __init__(self, font="Segoe UI"):
         super().__init__()
-        self.task_options: dict[str, str | bool | dict] = {}
+        # self.task_options: dict[str, str | bool | dict] = {}
+        self.task_options: dict[str, str | bool | dict] = {
+            "install_gpu_drivers": False,
+            "install_chipset_drivers": False,
+            "show_motherboard_driver_page": False,
+            "run_windows_tweaks": False,
+            "save_spec_sheet": False,
+            "run_app_installer": False,
+            "apps": {},
+            "activate_windows": False,
+            "activate_windows_massgrave": False,
+            "activate_windows_key": False,
+            "windows_product_key": "",
+            "run_furmark_test": False,
+            "furmark_duration": "",
+            "furmark_resolution": "",
+            "furmark_anti_aliasing": ""
+        }
+
         self.init_ui(font)
         self.setup_connections()
 
@@ -225,7 +245,7 @@ class ScriptOptionsWindow(QMainWindow):
             ("sevenzip", "7-Zip (Recommended)", True),
         ]
 
-        self.app_checkboxes = {}
+        self.app_checkboxes: dict[str, QCheckBox] = {}
 
         for app_id, app_name, checked in apps:
             checkbox = QCheckBox(app_name)
@@ -359,7 +379,7 @@ class ScriptOptionsWindow(QMainWindow):
             
     def format_product_key(self, text):
         # Remove non-alphanumeric characters and convert to uppercase
-        raw = re.sub(r'[^A-Za-z0-9]', '', text).upper()
+        raw = regexp.sub(r'[^A-Za-z0-9]', '', text).upper()
         raw = raw[:25]  # Limit to 25 characters
 
         # Split into chunks of 5
@@ -402,7 +422,7 @@ class ScriptOptionsWindow(QMainWindow):
         if self.run_app_installer.isChecked():
             for app_id, checkbox in self.app_checkboxes.items():
                 self.task_options["apps"][app_id] = checkbox.isChecked()
-                
+
             # FurMark specific options
             if self.furmark_checkbox.isChecked():
                 self.task_options["run_furmark_test"] = self.run_furmark_test.isChecked()
@@ -418,7 +438,7 @@ class ScriptOptionsWindow(QMainWindow):
         else:
             # Clear all app options if app installer is unchecked
             for app_id in self.app_checkboxes.keys():
-                self.task_options[app_id] = False
+                self.task_options["apps"][app_id] = False
             self.task_options["run_furmark_test"] = False
             self.task_options["furmark_duration"] = ""
             self.task_options["furmark_resolution"] = ""

@@ -107,9 +107,9 @@ def get_user_choice2(options: dict[str, Callable], default: Callable | None = No
         else:
             print(error.format(key=key))
 
+# this doesn't need to be cross platform but whatever
 def clear_screen():
-    os.system("cls")
-    # i would add `clear` but this is windows only so why would it need to be here
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def restart_explorer():
     subprocess.run(["taskkill.exe", "/f", "/im", "explorer.exe"])  # forcefully kill explorer.exe

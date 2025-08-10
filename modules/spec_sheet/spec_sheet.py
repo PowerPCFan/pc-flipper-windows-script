@@ -1,8 +1,10 @@
 import os
+import webbrowser
+from modules.color.ansi_codes import BLUE, GREEN, RESET
 from modules.misc import utils
 import modules.misc.global_vars as global_vars
 
-def save(save_location: str = os.path.join(global_vars.CURRENT_USER_DESKTOP, "spec_sheet.html")):
+def save(save_location: str = os.path.join(global_vars.CURRENT_USER_DESKTOP, "SpecSheet.html")):
     styles = """
 
 body {
@@ -36,9 +38,14 @@ h2 {
     <h2>General Information</h2>
     <ul>
         <li><strong>PC Name:</strong> {global_vars.PC_NAME.strip('-')}</li>
-        <li><strong>OS:</strong> {global_vars.WINDOWS_OS_VERSION}</li>
-        <li><strong>OS Architecture:</strong> {'64-bit' if global_vars.OS_IS_64BIT else '32-bit'}</li>
-        <li><strong>OS Install Date:</strong> {(utils.parse_windows_timestamp(global_vars.INSTALL_TIME)).strftime("%B %d, %Y at %I:%M %p")}</li>
+        <li>
+            <strong>OS Information:</strong>
+            <ul>
+                <li><strong>Name:</strong> {global_vars.WINDOWS_OS_VERSION}</li>
+                <li><strong>Architecture:</strong> {'64-bit' if global_vars.OS_IS_64BIT else '32-bit'}</li>
+                <li><strong>Install Date:</strong> {(utils.parse_windows_timestamp(global_vars.INSTALL_TIME)).strftime("%B %d, %Y at %I:%M %p")}</li>
+            </ul>
+        </li>
     </ul>
     <h2>Hardware Information</h2>
     <ul>
@@ -46,7 +53,7 @@ h2 {
         <li><strong>GPU:</strong> {global_vars.GPU}</li>
         <li><strong>RAM:</strong> {global_vars.RAM}</li>
         <li><strong>Motherboard:</strong> {global_vars.FULL_MOTHERBOARD_NAME}</li>
-        <li><strong>Storage:</strong> {global_vars.STORAGE}</li>
+        <li><strong>Current Partition Size:</strong> {global_vars.STORAGE}</li>
         <li><strong>Display Information:</strong> {utils.get_display_info()}</li>
     </ul>
     <h2>Network Information</h2>
@@ -57,5 +64,10 @@ h2 {
 </body>
 </html>
 """
+
     with open(save_location, "w") as f:
         f.write(html)
+
+    webbrowser.open(save_location)
+
+    print(f"{GREEN}Spec sheet successfully saved and opened!{RESET}")

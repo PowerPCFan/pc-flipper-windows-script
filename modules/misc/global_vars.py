@@ -48,9 +48,9 @@ SCRIPT_TEMP: str = tempfile.mkdtemp()  # temporary directory for script files
 
 OS_IS_64BIT: bool = environment.Is64BitOperatingSystem
 
-BOARD: str = Win32_BaseBoard.Product
-MANUFACTURER: str = Win32_BaseBoard.Manufacturer
-FULL_MOTHERBOARD_NAME: str = f"{MANUFACTURER} {BOARD}"
+_motherboard_model: str = Win32_BaseBoard.Product
+_motherboard_manufacturer: str = Win32_BaseBoard.Manufacturer
+FULL_MOTHERBOARD_NAME: str = f"{_motherboard_manufacturer} {_motherboard_model}"
 
 GPU: str = "Unknown"
 for video_controller in computer.Win32_VideoController():
