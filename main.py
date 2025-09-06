@@ -70,6 +70,15 @@ def cleanup():
 
 
 def main():
+    if global_vars.OS != "Windows":
+        print(
+            f"\n\n\n{RED}"
+            "No idea how you're running this script, but it is only compatible with Windows.\n"
+            "If you are using Windows and experiencing this issue, please make an issue on GitHub."
+            f"{RESET}"
+        )
+        sys.exit(1)
+
     print("Checking for administrator privileges...")
     startup_tests.administrator.test_admin_privileges()
 
