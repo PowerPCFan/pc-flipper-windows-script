@@ -4,6 +4,7 @@ from modules.color.ansi_codes import GREEN, YELLOW, RESET
 
 winget = Winget()
 
+
 def install_vcpp_redists():
     vc_redist_years = ["2005", "2008", "2010", "2012", "2013", "2015+"]
     architectures = ["x86", "x64"] if global_vars.OS_IS_64BIT else ["x86"]

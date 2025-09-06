@@ -14,6 +14,7 @@ import modules.spec_sheet.spec_sheet                  as spec_sheet
 from modules.color.ansi_codes                         import RESET, RED, YELLOW, GREEN
 from modules.misc.enums                               import WindowsActivationMethod
 
+
 def invoke_tasks(tasks: dict[str, str | bool | dict]):
     if tasks["install_gpu_drivers"]:
         drivers.gpu.install_gpu_drivers()
@@ -95,8 +96,8 @@ if __name__ == "__main__":
         print(f"{YELLOW}\nExiting...{RESET}")
         sys.exit(0)
     except Exception as e:
-        # catch all exceptions not caught by a more specific try-except, 
-        # print a user-friendly error, 
+        # catch all exceptions not caught by a more specific try-except,
+        # print a user-friendly error,
         # and exit with status code 1
 
         # note to self - if you don't want the script to exit after an error,
@@ -111,7 +112,7 @@ if __name__ == "__main__":
             f"{dashes}\n"
             f"{e}"
         )
-        
+
         sys.exit(1)
 else:
     print(f"{YELLOW}This script is not meant to be run as a module. Exiting...{RESET}")

@@ -3,13 +3,23 @@ import subprocess
 import modules.misc.global_vars as global_vars
 from modules.color.ansi_codes import RESET, RED
 
+
 def run_furmark_test(duration: int, resolution: str, anti_aliasing: str):
     furmark_test_duration: int = duration * 60 * 1000
-    
+
     res_map = {
-        "720p": { "Width": "1280", "Height": "720" },
-        "1080p": { "Width": "1920", "Height": "1080" },
-        "1440p": { "Width": "2560", "Height": "1440" },
+        "720p": {
+            "Width": "1280",
+            "Height": "720"
+        },
+        "1080p": {
+            "Width": "1920",
+            "Height": "1080"
+        },
+        "1440p": {
+            "Width": "2560",
+            "Height": "1440"
+        },
     }
 
     aliasing_map = {
@@ -49,7 +59,7 @@ def run_furmark_test(duration: int, resolution: str, anti_aliasing: str):
         f"/msaa={furmark_anti_aliasing}",
         f"/max_time={furmark_test_duration}"
     ]
-    
+
     print(
         f"Starting FurMark stress test with the following settings:\n"
         f"Resolution: {furmark_test_width} x {furmark_test_height} ({resolution})\n"

@@ -2,10 +2,11 @@ from modules.color.ansi_codes import RESET, GREEN
 from modules.tweaks.registry import Registry
 from modules.misc.enums import RegistryType
 
+
 class WindowsTweaks:
     def __init__(self) -> None:
         pass
-    
+
     def run(self):
         print("Disabling Location Services...")
         Registry.add(
@@ -14,7 +15,6 @@ class WindowsTweaks:
             value="Deny",
             reg_type=RegistryType.REG_SZ
         )
-
 
         print("Disabling Windows Error Reporting...")
         Registry.add(

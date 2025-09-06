@@ -1,11 +1,12 @@
 import modules.visual_cpp_redists as vcpp_redists
 import modules.misc.global_vars as global_vars
 from modules.winget import Winget
-from modules.color.ansi_codes import YELLOW, CYAN, RESET
+from modules.color.ansi_codes import CYAN, RESET
 
 winget = Winget()
 
-installing_app_prefix = f"\n\n"
+installing_app_prefix = "\n\n"
+
 
 def install_selected_apps(selected_apps: dict[str, bool]):
     # normalize to lowercase
@@ -79,15 +80,15 @@ def install_selected_apps(selected_apps: dict[str, bool]):
     if selected_apps.get("occt"):
         print(f"{installing_app_prefix}{CYAN}Installing OCCT...{RESET}")
         winget.install(id="OCBase.OCCT.Personal", params=global_vars.WINGET_PARAMS)
-    
+
     if selected_apps.get("cinebench"):
         print(f"{installing_app_prefix}{CYAN}Installing Cinebench R23...{RESET}")
         winget.install(id="Maxon.CinebenchR23", params=global_vars.WINGET_PARAMS)
-    
+
     if selected_apps.get("crystaldiskmark"):
         print(f"{installing_app_prefix}{CYAN}Installing CrystalDiskMark...{RESET}")
         winget.install(id="CrystalDewWorld.CrystalDiskMark", params=global_vars.WINGET_PARAMS)
-    
+
     if selected_apps.get("crystaldiskinfo"):
         print(f"{installing_app_prefix}{CYAN}Installing CrystalDiskInfo...{RESET}")
         winget.install(id="CrystalDewWorld.CrystalDiskInfo", params=global_vars.WINGET_PARAMS)
@@ -95,7 +96,7 @@ def install_selected_apps(selected_apps: dict[str, bool]):
     if selected_apps.get("aida64"):
         print(f"{installing_app_prefix}{CYAN}Installing AIDA64...{RESET}")
         winget.install(id="FinalWire.AIDA64.Extreme", params=global_vars.WINGET_PARAMS)
-    
+
     if selected_apps.get("fancontrol"):
         print(f"{installing_app_prefix}{CYAN}Installing FanControl...{RESET}")
         winget.install(id="Rem0o.FanControl", params=global_vars.WINGET_PARAMS)
@@ -119,7 +120,7 @@ def install_selected_apps(selected_apps: dict[str, bool]):
     if selected_apps.get("superposition"):
         print(f"{installing_app_prefix}{CYAN}Installing Unigine Superposition Benchmark...{RESET}")
         winget.install(id="Unigine.SuperpositionBenchmark", params=global_vars.WINGET_PARAMS)
-    
+
     if selected_apps.get("revo"):
         print(f"{installing_app_prefix}{CYAN}Installing Revo Uninstaller...{RESET}")
         winget.install(id="RevoUninstaller.RevoUninstaller", params=global_vars.WINGET_PARAMS)

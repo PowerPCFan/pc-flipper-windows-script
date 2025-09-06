@@ -15,12 +15,13 @@ from tkinter import messagebox
 from modules.misc.enums import OpenModes
 from modules.color.ansi_codes import RESET, RED, YELLOW
 
+
 def remove_if_exists(path: str):
     """
-    ### Description:
-    Removes a file or directory if it exists.  
-    This function automatically detects if the path  
-    is a file or directory and removes it accordingly  
+    Removes a file or directory if it exists.
+
+    This function automatically detects if the path
+    is a file or directory and removes it accordingly
     using `shutil.rmtree()` or `os.remove()`.
     """
     if os.path.exists(path):
@@ -29,15 +30,17 @@ def remove_if_exists(path: str):
         else:
             os.remove(path)
 
+
 def ensure_dir_exists(path: str) -> str:
     """
-    ### Description:
-    Ensures a directory exists at the given path.  
+    Ensures a directory exists at the given path.
+
     Returns the path to the directory regardless of whether it was created by this function or already existed.
     """
     if not os.path.exists(path):
         os.makedirs(path)
     return path
+
 
 def download_large_file(url: str, destination: str, chunk_size: int = 8192, headers: dict | None = None, timeout: int | None = None):
     try:
@@ -49,6 +52,7 @@ def download_large_file(url: str, destination: str, chunk_size: int = 8192, head
                         f.write(chunk)
     except requests.exceptions.RequestException as e:
         print(f"{RED}Error downloading file: {e}{RESET}")
+
 
 def get_user_choice(prompt: str, options: dict[str, Callable], names: dict[str, str | None], default: Callable | None = None) -> Callable:
     """
@@ -82,6 +86,7 @@ def get_user_choice(prompt: str, options: dict[str, Callable], names: dict[str, 
         else:
             print(error.format(key=key))
 
+
 def get_user_choice2(options: dict[str, Callable], default: Callable | None = None) -> Callable:
     """
     ### Description:
@@ -107,14 +112,17 @@ def get_user_choice2(options: dict[str, Callable], default: Callable | None = No
         else:
             print(error.format(key=key))
 
+
 # this doesn't need to be cross platform but whatever
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def restart_explorer():
     subprocess.run(["taskkill.exe", "/f", "/im", "explorer.exe"])  # forcefully kill explorer.exe
     subprocess.run(["start", "explorer.exe"], shell=True)  # shell=True needed because `start` is a shell command, not an executable
     print("SUCCESS: The process \"explorer.exe\" has been started.")  # print statement that matches the one produced by taskkill.exe
+
 
 def detection_error(title: str, resizable: bool, message: str, names: list[str]) -> str | None:
     root = tk.Tk()
@@ -143,11 +151,13 @@ def detection_error(title: str, resizable: bool, message: str, names: list[str])
 
     return response
 
+
 def popup_message(title: str, message: str) -> None:
     root = tk.Tk()
     root.withdraw()
     messagebox.showinfo(title, message)
     root.destroy()
+
 
 def process_is_running(process_name: str) -> bool:
     processes: Iterator[psutil.Process] = psutil.process_iter(['name'])
@@ -157,13 +167,15 @@ def process_is_running(process_name: str) -> bool:
             return True
     return False
 
+
 def unzip_file(infile: str, outfile: str | None = None) -> str:
     if outfile is None:
         outfile = os.path.join(os.path.dirname(infile), os.path.splitext(os.path.basename(infile))[0])
-    
+
     with zipfile.ZipFile(infile, 'r') as zip_ref:
         zip_ref.extractall(outfile)
     return outfile
+
 
 def parse_windows_timestamp(ts: str) -> datetime:
     match = regexp.fullmatch(r"(\d{14})\.(\d+)([-+]\d{3,4})", ts)
@@ -181,6 +193,7 @@ def parse_windows_timestamp(ts: str) -> datetime:
     tz = timezone(timedelta(minutes=offset_minutes))
 
     return base_dt.replace(tzinfo=tz)
+
 
 def get_display_info() -> str:
     dm = win32api.EnumDisplaySettings(None, win32con.ENUM_CURRENT_SETTINGS)

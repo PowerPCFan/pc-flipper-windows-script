@@ -1,12 +1,15 @@
 # PC Flipper Windows Script
-I made this script to make it easier for PC flippers to prepare Windows on builds being prepared for sale.  
-Even if you're not a PC flipper you can still use it for your own computer to install drivers, install apps, and more!
+I created this script to make it easier for PC flippers to prepare Windows on computers being prepared for sale.  
+Even if you're not a PC flipper, you can still use this on your personal computer to install drivers, apps, and more!
 
+> [!NOTE]
+> **This script is intended for 64-bit Windows PCs running Windows 10 or Windows 11**. This will (most likely) not work/not work properly on older versions of Windows, 32-bit or ARM-based systems, or Linux/macOS.
 
 # Execution
 
-1. Go to the [Releases](https://github.com/PowerPCFan/pc-flipper-windows-script/releases/latest) page.
-2. From the latest release, download the file called `pc-flipper-windows-script.exe`. 
+1. Go to the [Latest Releases](https://github.com/PowerPCFan/pc-flipper-windows-script/releases/latest) page.
+2. Download the file called `pc-flipper-windows-script.exe`. 
+   - *Note: If you are using Microsoft Edge, you may need to click through some menus and press "Keep" because of SmartScreen.*
 3. Double-click the file to run it, and accept the prompt to run as administrator. That's all!
 
 
@@ -33,4 +36,4 @@ You can also **suggest new ideas to add to the script** using the **Issues page*
 
 # Contributing
 
-If you want to contribute, please fork the repo, clone it, edit/modify it to your liking, and make a [pull request](https://github.com/PowerPCFan/pc-flipper-windows-script/pulls) where I can review the code and choose to add it to the main script or not. Your contributions are greatly appreciated.
+If you want to contribute, please fork the repo, clone it, edit/modify it to your liking, and make a [pull request](https://github.com/PowerPCFan/pc-flipper-windows-script/pulls). I encourage the use of a type checker (like Pylance or mypy) to catch potential issues. Your contributions are greatly appreciated.

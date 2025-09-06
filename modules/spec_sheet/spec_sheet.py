@@ -1,8 +1,9 @@
 import os
 import webbrowser
-from modules.color.ansi_codes import BLUE, GREEN, RESET
+from modules.color.ansi_codes import GREEN, RESET
 from modules.misc import utils
 import modules.misc.global_vars as global_vars
+
 
 def save(save_location: str = os.path.join(global_vars.CURRENT_USER_DESKTOP, "SpecSheet.html")):
     styles = """
@@ -22,7 +23,6 @@ h2 {
 }
 
 """
-
 
     html = f"""
 <!DOCTYPE html>

@@ -2,6 +2,7 @@ import winreg
 from modules.color.ansi_codes import RESET, RED
 from modules.misc.enums import RegistryType
 
+
 class Registry:
     HIVE_MAP = {
         "HKCU": winreg.HKEY_CURRENT_USER,

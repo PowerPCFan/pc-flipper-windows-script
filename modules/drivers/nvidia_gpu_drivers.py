@@ -1,3 +1,5 @@
+# flake8: noqa
+
 # Version 1.0.1
 # Last Edited: 21 June 2025, 00:52 UTC
 # https://github.com/PowerPCFan/Nvidia-GPU-Drivers

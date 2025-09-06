@@ -1,3 +1,7 @@
+# because linters and type checkers REALLY don't like this file.
+# flake8: noqa
+# type: ignore
+
 import tempfile
 import os
 import requests
@@ -5,10 +9,8 @@ import wmi
 import socket
 import platformdirs
 import psutil
-
-# pylance REALLY hates this
-import clr  # type: ignore
-import System  # type: ignore
+import clr
+import System
 
 
 

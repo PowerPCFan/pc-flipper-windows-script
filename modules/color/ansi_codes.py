@@ -3,6 +3,7 @@ import sys
 import ctypes
 import functools
 
+
 def enable_ansi():
     try:
         kernel32 = ctypes.windll.kernel32
@@ -12,8 +13,9 @@ def enable_ansi():
             return False
         new_mode = mode.value | 0x0004
         return kernel32.SetConsoleMode(handle, new_mode) != 0
-    except Exception: 
+    except Exception:
         return False
+
 
 def supports_ansi(vt_enabled):
     if vt_enabled:
@@ -28,9 +30,11 @@ def supports_ansi(vt_enabled):
         )
     )
 
+
 @functools.lru_cache(maxsize=None)
 def ansi_supported():
     return supports_ansi(enable_ansi())
+
 
 def get_colors(ansi_is_supported):
     codes = {
@@ -51,6 +55,7 @@ def get_colors(ansi_is_supported):
         codes = {k: "" for k in codes}
 
     return codes
+
 
 # Example usage
 COLORS = get_colors(ansi_supported())

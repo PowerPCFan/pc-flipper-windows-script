@@ -1,15 +1,16 @@
 import sys
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, 
-    QHBoxLayout, QLabel, QCheckBox, QPushButton, 
-    QScrollArea, QFrame, QLineEdit, QRadioButton, 
-    QButtonGroup, QComboBox, QMessageBox
+    QApplication, QMainWindow, QWidget, QVBoxLayout,
+    QHBoxLayout, QLabel, QCheckBox, QPushButton,
+    QScrollArea, QFrame, QLineEdit, QRadioButton,
+    QButtonGroup, QComboBox
 )
 from PyQt6.QtCore import QRect
 from PyQt6.QtGui import QFont, QScreen
 import re as regexp
 
 # i hate this code
+
 
 class ScriptOptionsWindow(QMainWindow):
     def __init__(self, font="Segoe UI"):
@@ -252,7 +253,7 @@ class ScriptOptionsWindow(QMainWindow):
             checkbox.setChecked(checked)
             self.app_checkboxes[app_id] = checkbox
             layout.addWidget(checkbox)
-            
+
         # FurMark with special handling
         self.furmark_checkbox = QCheckBox("FurMark (Recommended)")
         self.furmark_checkbox.setChecked(True)
@@ -308,7 +309,7 @@ class ScriptOptionsWindow(QMainWindow):
         self.furmark_anti_aliasing.addItems([
             "None",
             "MSAA 2x",
-            "MSAA 4x", 
+            "MSAA 4x",
             "MSAA 8x"
         ])
         self.furmark_anti_aliasing.setCurrentIndex(2)
@@ -350,7 +351,7 @@ class ScriptOptionsWindow(QMainWindow):
             checkbox.setChecked(checked)
             self.app_checkboxes[app_id] = checkbox
             layout.addWidget(checkbox)
-            
+
     def setup_connections(self):
         # Windows activation panel visibility
         self.activate_windows.toggled.connect(self.activate_windows_panel.setVisible)
@@ -376,14 +377,14 @@ class ScriptOptionsWindow(QMainWindow):
         else:
             self.run_furmark_test.setEnabled(True)
             self.run_furmark_test.setToolTip("")
-            
+
     def format_product_key(self, text):
         # Remove non-alphanumeric characters and convert to uppercase
         raw = regexp.sub(r'[^A-Za-z0-9]', '', text).upper()
         raw = raw[:25]  # Limit to 25 characters
 
         # Split into chunks of 5
-        chunks = [raw[i:i+5] for i in range(0, len(raw), 5)]
+        chunks = [raw[i: i + 5] for i in range(0, len(raw), 5)]
         formatted = '-'.join(chunks)
         cursor_position = len(formatted)
 
