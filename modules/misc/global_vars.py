@@ -40,7 +40,8 @@ USERPROFILE: str = os.getenv("USERPROFILE", os.path.expanduser("~"))
 
 
 # Current user and system variables/information
-CURRENT_USER_DESKTOP: str = platformdirs.user_desktop_dir()  # i spent a long time finding this solution because just using ~/Desktop isn't reliable due to OneDrive, different languages, etc
+# i'm using the following because using `~/Desktop` isn't reliable due to OneDrive, different languages, etc
+CURRENT_USER_DESKTOP: str = platformdirs.user_desktop_dir()
 PC_NAME: str = str(Win32_ComputerSystem.Name)
 INSTALL_TIME: str = str(Win32_OperatingSystem.InstallDate)
 WINDOWS_OS_VERSION: str = str(Win32_OperatingSystem.Caption)

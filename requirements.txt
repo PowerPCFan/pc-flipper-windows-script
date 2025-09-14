@@ -5,3 +5,4 @@ readchar
 platformdirs
 requests
 WMI
+netchecker
