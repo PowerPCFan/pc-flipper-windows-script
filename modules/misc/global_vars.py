@@ -1,6 +1,6 @@
 import tempfile
 import os
-import requests
+import netchecker
 import wmi
 import socket
 import platformdirs
@@ -46,7 +46,7 @@ PC_NAME: str = str(Win32_ComputerSystem.Name)
 INSTALL_TIME: str = str(Win32_OperatingSystem.InstallDate)
 WINDOWS_OS_VERSION: str = str(Win32_OperatingSystem.Caption)
 LOCAL_IP: str = socket.gethostbyname(socket.gethostname())
-PUBLIC_IP: str = requests.get("https://checkip.amazonaws.com/", timeout=2).text.strip()
+PUBLIC_IP: str = netchecker.get_public_ip() or "127.0.0.1"
 
 
 # Script variables
