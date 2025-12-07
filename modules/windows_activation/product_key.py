@@ -12,7 +12,7 @@ def activate(key: str):
                 args=[
                     "powershell.exe",
                     "-Command",
-                    f"$sv = Get-CimInstance -ClassName \"SoftwareLicensingService\";$sp = @{{ClassName = 'SoftwareLicensingProduct'; Filter = \"ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL\"}};$p = Get-CimInstance @sp;$sv | Invoke-CimMethod -MethodName InstallProductKey -Arguments @{{ ProductKey = \"{key}\" }}|Out-Null;$p | Invoke-CimMethod -MethodName Activate|Out-Null;$sv | Invoke-CimMethod -MethodName RefreshLicenseStatus|Out-Null"
+                    f"$sv = Get-CimInstance -ClassName \"SoftwareLicensingService\";$sp = @{{ClassName = 'SoftwareLicensingProduct'; Filter = \"ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL\"}};$p = Get-CimInstance @sp;$sv | Invoke-CimMethod -MethodName InstallProductKey -Arguments @{{ ProductKey = \"{key}\" }}|Out-Null;$p | Invoke-CimMethod -MethodName Activate|Out-Null;$sv | Invoke-CimMethod -MethodName RefreshLicenseStatus|Out-Null"  # noqa: E501
                 ],
                 check=True,
                 capture_output=True,

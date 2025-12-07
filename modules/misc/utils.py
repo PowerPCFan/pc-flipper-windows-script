@@ -42,7 +42,13 @@ def ensure_dir_exists(path: str) -> str:
     return path
 
 
-def download_large_file(url: str, destination: str, chunk_size: int = 8192, headers: dict | None = None, timeout: int | None = None):
+def download_large_file(
+    url: str,
+    destination: str,
+    chunk_size: int = 8192,
+    headers: dict | None = None,
+    timeout: int | None = None
+) -> None:
     try:
         with requests.get(url, stream=True, headers=headers, timeout=timeout) as r:
             r.raise_for_status()
@@ -54,7 +60,12 @@ def download_large_file(url: str, destination: str, chunk_size: int = 8192, head
         print(f"{RED}Error downloading file: {e}{RESET}")
 
 
-def get_user_choice(prompt: str, options: dict[str, Callable], names: dict[str, str | None], default: Callable | None = None) -> Callable:
+def get_user_choice(
+    prompt: str,
+    options: dict[str, Callable],
+    names: dict[str, str | None],
+    default: Callable | None = None
+) -> Callable:
     """
     ### Description:
     Get a user choice from a set of options. Accepts both uppercase and lowercase keypresses.
@@ -119,9 +130,12 @@ def clear_screen():
 
 
 def restart_explorer():
-    subprocess.run(["taskkill.exe", "/f", "/im", "explorer.exe"])  # forcefully kill explorer.exe
-    subprocess.run(["start", "explorer.exe"], shell=True)  # shell=True needed because `start` is a shell command, not an executable
-    print("SUCCESS: The process \"explorer.exe\" has been started.")  # print statement that matches the one produced by taskkill.exe
+    # forcefully kill explorer.exe
+    subprocess.run(["taskkill.exe", "/f", "/im", "explorer.exe"])
+    # shell=True needed because `start` is a shell command, not an executable
+    subprocess.run(["start", "explorer.exe"], shell=True)
+    # print statement that matches the one produced by taskkill.exe
+    print("SUCCESS: The process \"explorer.exe\" has been started.")
 
 
 def detection_error(title: str, resizable: bool, message: str, names: list[str]) -> str | None:
@@ -145,7 +159,17 @@ def detection_error(title: str, resizable: bool, message: str, names: list[str])
     button_frame.pack(pady=10)
 
     for i, name in enumerate(names):
-        tk.Button(button_frame, text=name, width=10, command=lambda n=name: set_response(n)).grid(row=i // 2, column=i % 2, padx=5, pady=5)
+        tk.Button(
+            button_frame,
+            text=name,
+            width=10,
+            command=lambda n=name: set_response(n)
+        ).grid(
+            row=i // 2,
+            column=i % 2,
+            padx=5,
+            pady=5
+        )
 
     root.mainloop()
 

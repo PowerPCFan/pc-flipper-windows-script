@@ -9,12 +9,12 @@ from modules.color.ansi_codes import RED, RESET, CYAN, GREEN, YELLOW
 
 class ChipsetDrivers:
     def __init__(self) -> None:
-        self.driver_download_path: str = utils.ensure_dir_exists(os.path.join(global_vars.SCRIPT_TEMP, "drivers", "chipset"))
+        self.driver_download_path: str = utils.ensure_dir_exists(os.path.join(global_vars.SCRIPT_TEMP, "drivers", "chipset"))  # noqa: E501
 
         self.amd_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "amd"))
         self.intel_driver_download_path: str = utils.ensure_dir_exists(os.path.join(self.driver_download_path, "intel"))
 
-        self.amd_driver_download_link: str = requests.get("https://raw.githubusercontent.com/notFoxils/AMD-Chipset-Drivers/refs/heads/main/configs/link.txt").text.strip()
+        self.amd_driver_download_link: str = requests.get("https://raw.githubusercontent.com/notFoxils/AMD-Chipset-Drivers/refs/heads/main/configs/link.txt").text.strip()  # noqa: E501
         self.intel_driver_download_link: str = "https://downloadmirror.intel.com/843223/SetupChipset.exe"
 
     def install_amd_drivers(self):
@@ -36,12 +36,12 @@ class ChipsetDrivers:
             output = subprocess.run([driver_path])
 
             if output.returncode == 0:
-                while utils.process_is_running("chipset_amd.exe") or utils.process_is_running("amd_chipset_drivers.exe") or utils.process_is_running("Setup.exe"):
+                while utils.process_is_running("chipset_amd.exe") or utils.process_is_running("amd_chipset_drivers.exe") or utils.process_is_running("Setup.exe"):  # noqa: E501
                     time.sleep(5)
 
                 print(f"{GREEN}AMD chipset drivers installed successfully.{RESET}")
             else:
-                print(f"{YELLOW}Warning: The AMD chipset driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
+                print(f"{YELLOW}Warning: The AMD chipset driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")  # noqa: E501
         else:
             print(f"{RED}Error: AMD chipset driver installer not found at {driver_path}.{RESET}")
 
@@ -61,11 +61,11 @@ class ChipsetDrivers:
             output = subprocess.run([driver_path])
 
             if output.returncode == 3010:
-                print(f"{GREEN}Intel chipset drivers installed successfully. A reboot is required for proper functionality.{RESET}")
+                print(f"{GREEN}Intel chipset drivers installed successfully. A reboot is required for proper functionality.{RESET}")  # noqa: E501
             elif output.returncode == 0:
                 print(f"{GREEN}Intel chipset drivers installed successfully.{RESET}")
             else:
-                print(f"{YELLOW}Warning: The Intel chipset driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
+                print(f"{YELLOW}Warning: The Intel chipset driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")  # noqa: E501
         else:
             print(f"{RED}Error: Intel chipset driver installer not found at {driver_path}.{RESET}")
 
@@ -93,8 +93,8 @@ def install_chipset_drivers():
         elif response == "intel":
             drivers.install_intel_drivers()
         elif response == "other":
-            print("You selected \"Other\", which means your CPU is currently unsupported. Please download the appropriate chipset drivers manually.")
+            print("You selected \"Other\", which means your CPU is currently unsupported. Please download the appropriate chipset drivers manually.")  # noqa: E501
             time.sleep(5)
         else:
-            print(f"{RED}There was an error collecting your response. Continuing without installing chipset drivers...{RESET}")
+            print(f"{RED}There was an error collecting your response. Continuing without installing chipset drivers...{RESET}")  # noqa: E501
             time.sleep(5)

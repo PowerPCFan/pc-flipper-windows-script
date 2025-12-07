@@ -5,7 +5,8 @@ import modules.misc.global_vars as global_vars
 from modules.misc.enums import OpenModes
 
 WRITE_PATH: str = os.path.join(global_vars.SCRIPT_TEMP, "hwid.cmd")
-SCRIPT_PATH: str = "https://gist.githubusercontent.com/PowerPCFan/0129696cb0f4716d1ace148ac0772e78/raw/57c4af12c4b72441f6c54d1fd723199281914651/hwid.cmd"
+# TODO: upgrade my GitHub Gist to a newer patched version of MAS - this one is really outdated atp
+SCRIPT_PATH: str = "https://gist.githubusercontent.com/PowerPCFan/0129696cb0f4716d1ace148ac0772e78/raw/57c4af12c4b72441f6c54d1fd723199281914651/hwid.cmd"  # noqa: E501
 
 
 def run():
@@ -35,6 +36,7 @@ def run():
         args=[
             "powershell.exe",
             "-Command",
-            f'Start-Process -Verb runAs -FilePath "cmd.exe" -ArgumentList "/k cd /d `\"%USERPROFILE%\\AppData\\Local\\Temp`\" && `\"{WRITE_PATH}`\""'
+            # me when there are a million quotes:
+            f'Start-Process -Verb runAs -FilePath "cmd.exe" -ArgumentList "/k cd /d `\"%USERPROFILE%\\AppData\\Local\\Temp`\" && `\"{WRITE_PATH}`\""'  # noqa: E501
         ]
     )

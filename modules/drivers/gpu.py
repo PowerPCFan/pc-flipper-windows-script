@@ -26,16 +26,16 @@ class GPUDrivers:
 
         self.amd_driver_download_link: str = ""
         try:
-            link: str = requests.get("https://raw.githubusercontent.com/nunodxxd/AMD-Software-Adrenalin/refs/heads/main/configs/config.json").json()["driver_links"]["stable"]
+            link: str = requests.get("https://raw.githubusercontent.com/nunodxxd/AMD-Software-Adrenalin/refs/heads/main/configs/config.json").json()["driver_links"]["stable"]  # noqa: E501
             hostname: str | None = urllib.parse.urlparse(link).hostname
             if hostname is not None and hostname.endswith("amd.com"):
                 self.amd_driver_download_link = link
             else:
-                raise ValueError("non-AMD domain detected, falling back to version 25.6.1 due to malware risk with non AMD domain")  # i know this line won't be printed but i figured i'd still describe what's happening
+                raise ValueError("non-AMD domain detected, falling back to version 25.6.1 due to malware risk with non AMD domain")  # i know this line won't be printed but i figured i'd still describe what's happening  # noqa: E501
         except Exception:
-            self.amd_driver_download_link = "https://drivers.amd.com/drivers/installer/25.10/whql/amd-software-adrenalin-edition-25.6.1-minimalsetup-250602_web.exe"
+            self.amd_driver_download_link = "https://drivers.amd.com/drivers/installer/25.10/whql/amd-software-adrenalin-edition-25.6.1-minimalsetup-250602_web.exe"  # noqa: E501
 
-        self.intel_driver_download_link: str = requests.get("https://raw.githubusercontent.com/PowerPCFan/Intel-Arc-GPU-Drivers/refs/heads/main/configs/link.txt").text.strip()
+        self.intel_driver_download_link: str = requests.get("https://raw.githubusercontent.com/PowerPCFan/Intel-Arc-GPU-Drivers/refs/heads/main/configs/link.txt").text.strip()  # noqa: E501
 
     def install_nvidia_drivers(self):
         print(f"{CYAN}Nvidia GPU detected.{RESET}")
@@ -51,7 +51,7 @@ class GPUDrivers:
             download_link: str | None = result.get("download_url")
 
             if download_link:
-                print(f"{CYAN}Installing {name if name else 'Nvidia GPU Driver'} version {version if version else 'unknown'}...{RESET}")
+                print(f"{CYAN}Installing {name if name else 'Nvidia GPU Driver'} version {version if version else 'unknown'}...{RESET}")  # noqa: E501
 
                 nvidia_driver = os.path.join(self.nvidia_driver_download_path, "setup.exe")
 
@@ -69,11 +69,11 @@ class GPUDrivers:
                     if output.returncode == 0:
                         print(f"{GREEN}Nvidia GPU drivers installed successfully.{RESET}")
                     else:
-                        print(f"{YELLOW}Warning: The Nvidia GPU driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
+                        print(f"{YELLOW}Warning: The Nvidia GPU driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")  # noqa: E501
                 else:
                     print(f"{RED}Error: Nvidia driver installer not found at {nvidia_driver}.{RESET}")
             else:
-                print(f"{RED}Error: Download link not found for selected driver. Skipping Nvidia driver installation...{RESET}")
+                print(f"{RED}Error: Download link not found for selected driver. Skipping Nvidia driver installation...{RESET}")  # noqa: E501
 
     def install_amd_drivers(self):
         print(f"{CYAN}AMD GPU detected. Drivers downloading and installing...{RESET}")
@@ -100,7 +100,7 @@ class GPUDrivers:
 
                 print(f"{GREEN}AMD GPU drivers installed successfully.{RESET}")
             else:
-                print(f"{YELLOW}Warning: The AMD GPU driver installer closed with nonzero exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
+                print(f"{YELLOW}Warning: The AMD GPU driver installer closed with nonzero exit code {output.returncode}. This may indicate that something went wrong.{RESET}")  # noqa: E501
         else:
             print(f"{RED}Error: AMD driver installer not found at {amd_drivers}.{RESET}")
 
@@ -123,7 +123,7 @@ class GPUDrivers:
             if output.returncode == 0:
                 print(f"{GREEN}Intel Arc GPU drivers installed successfully.{RESET}")
             else:
-                print(f"{YELLOW}Warning: The Intel Arc GPU driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")
+                print(f"{YELLOW}Warning: The Intel Arc GPU driver installer closed with exit code {output.returncode}. This may indicate that something went wrong.{RESET}")  # noqa: E501
         else:
             print(f"{RED}Error: Intel Arc driver installer not found at {intel_drivers}.{RESET}")
 
@@ -157,8 +157,8 @@ def install_gpu_drivers():
         elif response == "intelarc":
             drivers.install_intel_arc_drivers()
         elif response == "other":
-            print("You selected \"Other\", which means your GPU is currently unsupported. Please download the appropriate drivers manually.")
+            print("You selected \"Other\", which means your GPU is currently unsupported. Please download the appropriate drivers manually.")  # noqa: E501
             time.sleep(5)
         else:
-            print(f"{RED}There was an error collecting your response. Continuing without installing GPU drivers...{RESET}")
+            print(f"{RED}There was an error collecting your response. Continuing without installing GPU drivers...{RESET}")  # noqa: E501
             time.sleep(5)

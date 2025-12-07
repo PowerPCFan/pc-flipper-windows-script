@@ -49,7 +49,7 @@ def invoke_tasks(tasks: dict[str, str | bool | dict]):
             else:
                 raise ValueError("Your Windows Product Key is not a string. Please check your input.")
         else:
-            raise ValueError("You selected to activate Windows but a valid activation method was not specified. Please check your input.")
+            raise ValueError("You selected to activate Windows but a valid activation method was not specified. Please check your input.")  # noqa: E501
 
     if tasks["run_app_installer"]:
         apps.install_selected_apps(selected_apps=tasks["apps"])  # type: ignore
@@ -62,7 +62,7 @@ def invoke_tasks(tasks: dict[str, str | bool | dict]):
         if isinstance(duration, str) and isinstance(resolution, str) and isinstance(anti_aliasing, str):
             furmark.run_furmark_test(duration=int(duration), resolution=resolution, anti_aliasing=anti_aliasing)
         else:
-            raise ValueError("The FurMark test parameters specified are not valid strings. This is likely an issue with the script and not your input.")
+            raise ValueError("The FurMark test parameters specified are not valid strings. This is likely an issue with the script and not your input.")  # noqa: E501
 
 
 def cleanup():
@@ -93,7 +93,13 @@ def main():
     tasks = ui.show_script_options_window()
     invoke_tasks(tasks=tasks)
 
-    utils.popup_message(title="Script Complete", message="The script has finished running!\nPlease give it a star on GitHub!\nCreated by PowerPCFan")
+    utils.popup_message(
+        title="Script Complete",
+        message=(
+            "The script has finished running!\n"
+            "Please give it a star on GitHub - it's free and helps out a ton.\n"
+            "Script created by PowerPCFan"
+        ))
 
 
 if __name__ == "__main__":

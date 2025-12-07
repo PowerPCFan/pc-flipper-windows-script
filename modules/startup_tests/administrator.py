@@ -10,7 +10,7 @@ def relaunch_as_admin():
     subprocess.run([
         "powershell.exe",
         "-Command",
-        f"Start-Process powershell.exe -ArgumentList '-NoExit', '-Command', '\"{sys.executable}\" \"{os.path.abspath(sys.argv[0])}\"' -Verb RunAs"
+        f"Start-Process powershell.exe -ArgumentList '-NoExit', '-Command', '\"{sys.executable}\" \"{os.path.abspath(sys.argv[0])}\"' -Verb RunAs"  # noqa: E501
     ])
 
     sys.exit(0)
