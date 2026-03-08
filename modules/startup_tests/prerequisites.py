@@ -26,7 +26,7 @@ def _winget_installed_and_winget_version() -> tuple[bool, str | None]:
 
 def _winget_outdated(version: str) -> bool:
     winget_version = parse_version(version)
-    min_version = parse_version("1.6")  # consider <1.6 "outdated"
+    min_version = parse_version("1.10")  # consider <1.10 "outdated"
 
     return winget_version < min_version
 

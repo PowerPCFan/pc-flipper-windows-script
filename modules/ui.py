@@ -321,6 +321,7 @@ class ScriptOptionsWindow(QMainWindow):
 
         # the rest of the apps
         other_apps = [
+            ("furmark_2", "FurMark 2", False),
             ("firefox", "Firefox", False),
             ("chrome", "Chrome", False),
             ("steam", "Steam", False),
