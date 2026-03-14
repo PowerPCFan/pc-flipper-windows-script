@@ -411,10 +411,22 @@ class AIDescriptionGeneratorWindow(QMainWindow):
 
     def _on_generate_clicked(self):
         self.generate_button.setEnabled(False)
-        self.status_label.setText("Generating description...")
+        self.status_label.setText("Preparing AI model...")
         QApplication.processEvents()
 
         try:
+            if not self.ai.download_model():
+                self.status_label.setText("Model setup failed.")
+                QMessageBox.warning(
+                    self,
+                    "Model Setup Failed",
+                    "Unable to download or prepare the local AI model. Check your internet connection and try again."
+                )
+                return
+
+            self.status_label.setText("Generating description...")
+            QApplication.processEvents()
+
             prompt = self.ai.create_prompt(
                 cpu=self.spec_inputs["cpu"].text().strip() or None,
                 ram=self.spec_inputs["ram"].text().strip() or None,
