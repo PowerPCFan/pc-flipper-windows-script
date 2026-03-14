@@ -6,3 +6,4 @@ platformdirs
 requests
 WMI
 netchecker
+openai

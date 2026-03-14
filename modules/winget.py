@@ -60,7 +60,11 @@ class WingetTools:
             # current version is outdated or winui 2.8 is not installed whatsoever
 
             local_path = os.path.join(self.PACKAGES_DIR, "Microsoft_UI_Xaml_2_8.appx")
-            utils.download_large_file(url=self.WINUI_URL, destination=local_path)
+            download_success = utils.download_large_file(url=self.WINUI_URL, destination=local_path)
+
+            if not download_success:
+                print(f"{RED}Error installing WinUI 2.8: failed to download package.{RESET}")
+                return
 
             try:
                 install = subprocess.run(
@@ -93,7 +97,11 @@ class WingetTools:
             url = "https://aka.ms/getwinget"
             file_path = os.path.join(self.PACKAGES_DIR, "winget_installer.msixbundle")
 
-            utils.download_large_file(url=url, destination=file_path, chunk_size=8192)
+            download_success = utils.download_large_file(url=url, destination=file_path, chunk_size=8192)
+
+            if not download_success:
+                print(f"{RED}Error installing WinGet: failed to download installer.{RESET}")
+                return
 
             subprocess.run(
                 args=[

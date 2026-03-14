@@ -3,6 +3,7 @@ import os
 import modules.misc.utils as utils
 import modules.misc.global_vars as global_vars
 from modules.misc.enums import OpenModes
+from modules.color.ansi_codes import RESET, RED
 
 WRITE_PATH: str = os.path.join(global_vars.SCRIPT_TEMP, "hwid.cmd")
 # TODO: upgrade my GitHub Gist to a newer patched version of MAS - this one is really outdated atp
@@ -11,10 +12,14 @@ SCRIPT_PATH: str = "https://gist.githubusercontent.com/PowerPCFan/0129696cb0f471
 
 def run():
     # download the MAS script (use download_large_file even though it's not too large just for simplicity)
-    utils.download_large_file(
+    success = utils.download_large_file(
         url=SCRIPT_PATH,
         destination=WRITE_PATH
     )
+
+    if not success:
+        print(f"{RED}Failed to download Massgrave script, skipping activation.{RESET}")
+        return
 
     # read contents
     with open(file=WRITE_PATH, mode=OpenModes.READ.value, encoding='utf-8') as f:

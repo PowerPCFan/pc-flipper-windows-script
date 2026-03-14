@@ -1,76 +1,60 @@
+import re as regexp
 import sys
-from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout,
-    QHBoxLayout, QLabel, QCheckBox, QPushButton,
-    QScrollArea, QFrame, QLineEdit, QRadioButton,
-    QButtonGroup, QComboBox
-)
+
 from PyQt6.QtCore import QRect
 from PyQt6.QtGui import QFont, QScreen
-import re as regexp
+from PyQt6.QtWidgets import (
+    QApplication, QButtonGroup, QCheckBox, QComboBox,
+    QFrame, QHBoxLayout, QLabel, QLineEdit, QMainWindow,
+    QPushButton, QRadioButton, QScrollArea, QVBoxLayout,
+    QWidget
+)
 
-# i hate this code
+from modules.apps import APP_DEFINITIONS
+from modules.misc.models import (
+    ActivationChoice, AppDefinition,
+    AppId, FurmarkAntiAliasing,
+    FurmarkOptions, FurmarkResolution,
+    ScriptOptions
+)
 
 
 class ScriptOptionsWindow(QMainWindow):
-    def __init__(self, font="Segoe UI"):
+    def __init__(self, font: str = "Segoe UI"):
         super().__init__()
-        # self.task_options: dict[str, str | bool | dict] = {}
-        self.task_options: dict[str, str | bool | dict] = {
-            "install_gpu_drivers": False,
-            "install_chipset_drivers": False,
-            "show_motherboard_driver_page": False,
-            "run_windows_tweaks": False,
-            "save_spec_sheet": False,
-            "run_app_installer": False,
-            "apps": {},
-            "activate_windows": False,
-            "activate_windows_massgrave": False,
-            "activate_windows_key": False,
-            "windows_product_key": "",
-            "run_furmark_test": False,
-            "furmark_duration": "",
-            "furmark_resolution": "",
-            "furmark_anti_aliasing": ""
-        }
+        self.task_options = ScriptOptions(
+            selected_apps={app.app_id: app.selected_by_default for app in APP_DEFINITIONS}
+        )
+        self.app_checkboxes: dict[AppId, QCheckBox] = {}
 
         self.init_ui(font)
         self.setup_connections()
 
-    def init_ui(self, font):
+    def init_ui(self, font: str):
         self.setWindowTitle("Script Options")
-
         self.setMinimumSize(500, 400)
         self.resize(850, 650)
-
         self.setStyleSheet(f"font-family: {font};")
-
-        # Center the window
         self.center_window()
 
-        # Main widget and layout
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
         main_layout = QVBoxLayout(main_widget)
         main_layout.setContentsMargins(10, 10, 10, 10)
 
-        # Title
         title_label = QLabel("Script Options")
         title_label.setFont(QFont(font, 16, QFont.Weight.Bold))
         main_layout.addWidget(title_label)
 
-        # Subtitle
         subtitle_label = QLabel("Select the tasks you would like to run.")
         subtitle_label.setFont(QFont(font, 10, QFont.Weight.Bold))
         main_layout.addWidget(subtitle_label)
 
-        # Separator
         separator = QFrame()
         separator.setFrameShape(QFrame.Shape.HLine)
         separator.setFrameShadow(QFrame.Shadow.Sunken)
         main_layout.addWidget(separator)
 
-        # Scrollable content area
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(QFrame.Shape.Box)
@@ -83,13 +67,11 @@ class ScriptOptionsWindow(QMainWindow):
         self.create_system_section(scroll_layout)
         self.create_app_section(scroll_layout)
 
-        # consumes extra vertical space to preserve layout
         scroll_layout.addStretch()
 
         scroll_area.setWidget(scroll_widget)
         main_layout.addWidget(scroll_area)
 
-        # Continue button
         button_layout = QHBoxLayout()
         button_layout.addStretch()
         self.continue_button = QPushButton("Start Script")
@@ -107,12 +89,10 @@ class ScriptOptionsWindow(QMainWindow):
             self.move(x, y)
 
     def create_driver_section(self, layout: QVBoxLayout):
-        # Driver Installation header
         header = QLabel("Driver Installation")
         header.setFont(QFont(header.font().family(), 12, QFont.Weight.Bold))
         layout.addWidget(header)
 
-        # GPU Drivers
         self.install_gpu_drivers = QCheckBox("Install GPU Drivers")
         self.install_gpu_drivers.setChecked(True)
         layout.addWidget(self.install_gpu_drivers)
@@ -122,7 +102,6 @@ class ScriptOptionsWindow(QMainWindow):
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
 
-        # Chipset Drivers
         self.install_chipset_drivers = QCheckBox("Install Chipset Drivers")
         self.install_chipset_drivers.setChecked(True)
         layout.addWidget(self.install_chipset_drivers)
@@ -132,7 +111,6 @@ class ScriptOptionsWindow(QMainWindow):
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
 
-        # Motherboard Driver Page
         self.show_motherboard_driver_page = QCheckBox("Open Motherboard Driver Page")
         self.show_motherboard_driver_page.setChecked(True)
         layout.addWidget(self.show_motherboard_driver_page)
@@ -143,12 +121,10 @@ class ScriptOptionsWindow(QMainWindow):
         layout.addWidget(desc_label)
 
     def create_system_section(self, layout: QVBoxLayout):
-        # System Configuration header
         header = QLabel("System Configuration")
         header.setFont(QFont(header.font().family(), 12, QFont.Weight.Bold))
         layout.addWidget(header)
 
-        # Windows Tweaks
         self.run_windows_tweaks = QCheckBox("Tweak Windows")
         layout.addWidget(self.run_windows_tweaks)
 
@@ -157,7 +133,6 @@ class ScriptOptionsWindow(QMainWindow):
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
 
-        # Spec sheet
         self.save_spec_sheet = QCheckBox("Save System Spec Sheet to Desktop")
         layout.addWidget(self.save_spec_sheet)
 
@@ -166,7 +141,14 @@ class ScriptOptionsWindow(QMainWindow):
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
 
-        # Windows Activation
+        self.generate_ai_description = QCheckBox("Generate AI Listing Description")
+        layout.addWidget(self.generate_ai_description)
+
+        desc_label = QLabel("Opens an AI description generator window with detected specs")
+        desc_label.setStyleSheet("color: gray; margin-left: 25px;")
+        desc_label.setWordWrap(True)
+        layout.addWidget(desc_label)
+
         self.activate_windows = QCheckBox("Activate Windows")
         layout.addWidget(self.activate_windows)
 
@@ -175,7 +157,6 @@ class ScriptOptionsWindow(QMainWindow):
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
 
-        # Windows Activation Panel
         self.activate_windows_panel = QWidget()
         self.activate_windows_panel.setVisible(False)
         activate_layout = QVBoxLayout(self.activate_windows_panel)
@@ -192,7 +173,6 @@ class ScriptOptionsWindow(QMainWindow):
         self.activation_group.addButton(self.activate_windows_key)
         activate_layout.addWidget(self.activate_windows_key)
 
-        # Authentic Key Panel
         self.authentic_key_panel = QWidget()
         self.authentic_key_panel.setVisible(False)
         key_layout = QVBoxLayout(self.authentic_key_panel)
@@ -210,12 +190,10 @@ class ScriptOptionsWindow(QMainWindow):
         layout.addWidget(self.activate_windows_panel)
 
     def create_app_section(self, layout: QVBoxLayout):
-        # Application Management header
         header = QLabel("Application Management")
         header.setFont(QFont(header.font().family(), 12, QFont.Weight.Bold))
         layout.addWidget(header)
 
-        # Install Applications
         self.run_app_installer = QCheckBox("Install Applications")
         self.run_app_installer.setChecked(True)
         layout.addWidget(self.run_app_installer)
@@ -225,7 +203,6 @@ class ScriptOptionsWindow(QMainWindow):
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
 
-        # App Installer Panel
         self.app_installer_panel = QWidget()
         app_layout = QVBoxLayout(self.app_installer_panel)
         app_layout.setContentsMargins(25, 0, 0, 15)
@@ -234,139 +211,76 @@ class ScriptOptionsWindow(QMainWindow):
         app_header.setFont(QFont(app_header.font().family(), 10, QFont.Weight.Bold))
         app_layout.addWidget(app_header)
 
-        # Create application checkboxes
         self.create_app_checkboxes(app_layout)
         layout.addWidget(self.app_installer_panel)
 
+    def _add_app_checkbox(self, layout: QVBoxLayout, app: AppDefinition):
+        checkbox = QCheckBox(app.label)
+        checkbox.setChecked(app.selected_by_default)
+        self.app_checkboxes[app.app_id] = checkbox
+        layout.addWidget(checkbox)
+
     def create_app_checkboxes(self, layout: QVBoxLayout):
-        # recommended apps - checked by default
-        apps = [
-            ("redist", "Visual C++ Redist Runtimes (Recommended)", True),
-            ("dotnet", "Microsoft .NET Runtimes (Recommended)", True),
-            ("sevenzip", "7-Zip (Recommended)", True),
-        ]
+        for app in APP_DEFINITIONS:
+            if app.app_id == AppId.FURMARK:
+                self.furmark_checkbox = QCheckBox(app.label)
+                self.furmark_checkbox.setChecked(app.selected_by_default)
+                self.app_checkboxes[app.app_id] = self.furmark_checkbox
+                layout.addWidget(self.furmark_checkbox)
 
-        self.app_checkboxes: dict[str, QCheckBox] = {}
+                self.furmark_sub_options = QWidget()
+                furmark_layout = QVBoxLayout(self.furmark_sub_options)
+                furmark_layout.setContentsMargins(25, 0, 0, 0)
 
-        for app_id, app_name, checked in apps:
-            checkbox = QCheckBox(app_name)
-            checkbox.setChecked(checked)
-            self.app_checkboxes[app_id] = checkbox
-            layout.addWidget(checkbox)
+                self.run_furmark_test = QCheckBox("Run FurMark Stress Test after installation")
+                self.run_furmark_test.setChecked(True)
+                furmark_layout.addWidget(self.run_furmark_test)
 
-        # FurMark with special handling
-        self.furmark_checkbox = QCheckBox("FurMark (Recommended)")
-        self.furmark_checkbox.setChecked(True)
-        self.app_checkboxes["furmark"] = self.furmark_checkbox
-        layout.addWidget(self.furmark_checkbox)
+                desc_label = QLabel("Runs a GPU stress test using FurMark")
+                desc_label.setStyleSheet("color: gray; margin-left: 25px;")
+                desc_label.setWordWrap(True)
+                furmark_layout.addWidget(desc_label)
 
-        # FurMark sub-options
-        self.furmark_sub_options = QWidget()
-        furmark_layout = QVBoxLayout(self.furmark_sub_options)
-        furmark_layout.setContentsMargins(25, 0, 0, 0)
+                self.furmark_test_options = QWidget()
+                test_layout = QVBoxLayout(self.furmark_test_options)
+                test_layout.setContentsMargins(25, 0, 0, 10)
 
-        self.run_furmark_test = QCheckBox("Run FurMark Stress Test after installation")
-        self.run_furmark_test.setChecked(True)
-        furmark_layout.addWidget(self.run_furmark_test)
+                duration_label = QLabel("Test Duration (minutes):")
+                test_layout.addWidget(duration_label)
 
-        desc_label = QLabel("Runs a GPU stress test using FurMark")
-        desc_label.setStyleSheet("color: gray; margin-left: 25px;")
-        desc_label.setWordWrap(True)
-        furmark_layout.addWidget(desc_label)
+                self.furmark_duration = QLineEdit(str(FurmarkOptions().duration_minutes))
+                self.furmark_duration.setFixedWidth(100)
+                test_layout.addWidget(self.furmark_duration)
 
-        # FurMark test options
-        self.furmark_test_options = QWidget()
-        test_layout = QVBoxLayout(self.furmark_test_options)
-        test_layout.setContentsMargins(25, 0, 0, 10)
+                resolution_label = QLabel("Resolution:")
+                test_layout.addWidget(resolution_label)
 
-        # Duration
-        duration_label = QLabel("Test Duration (minutes):")
-        test_layout.addWidget(duration_label)
+                self.furmark_resolution = QComboBox()
+                self.furmark_resolution.addItems([res.value for res in FurmarkResolution])
+                self.furmark_resolution.setCurrentText(FurmarkResolution.P1080.value)
+                self.furmark_resolution.setFixedWidth(150)
+                test_layout.addWidget(self.furmark_resolution)
 
-        self.furmark_duration = QLineEdit("5")
-        self.furmark_duration.setFixedWidth(100)
-        test_layout.addWidget(self.furmark_duration)
+                aa_label = QLabel("Anti-Aliasing:")
+                test_layout.addWidget(aa_label)
 
-        # Resolution
-        resolution_label = QLabel("Resolution:")
-        test_layout.addWidget(resolution_label)
+                self.furmark_anti_aliasing = QComboBox()
+                self.furmark_anti_aliasing.addItems([aa.value for aa in FurmarkAntiAliasing])
+                self.furmark_anti_aliasing.setCurrentText(FurmarkAntiAliasing.MSAA_4X.value)
+                self.furmark_anti_aliasing.setFixedWidth(150)
+                test_layout.addWidget(self.furmark_anti_aliasing)
 
-        self.furmark_resolution = QComboBox()
-        self.furmark_resolution.addItems([
-            "720p (1280x720)",
-            "1080p (1920x1080)",
-            "1440p (2560x1440)"
-        ])
-        self.furmark_resolution.setCurrentIndex(1)
-        self.furmark_resolution.setFixedWidth(150)
-        test_layout.addWidget(self.furmark_resolution)
+                furmark_layout.addWidget(self.furmark_test_options)
+                layout.addWidget(self.furmark_sub_options)
+                continue
 
-        # Anti-Aliasing
-        aa_label = QLabel("Anti-Aliasing:")
-        test_layout.addWidget(aa_label)
-
-        self.furmark_anti_aliasing = QComboBox()
-        self.furmark_anti_aliasing.addItems([
-            "None",
-            "MSAA 2x",
-            "MSAA 4x",
-            "MSAA 8x"
-        ])
-        self.furmark_anti_aliasing.setCurrentIndex(2)
-        self.furmark_anti_aliasing.setFixedWidth(150)
-        test_layout.addWidget(self.furmark_anti_aliasing)
-
-        furmark_layout.addWidget(self.furmark_test_options)
-        layout.addWidget(self.furmark_sub_options)
-
-        # the rest of the apps
-        other_apps = [
-            ("furmark_2", "FurMark 2", False),
-            ("firefox", "Firefox", False),
-            ("chrome", "Chrome", False),
-            ("steam", "Steam", False),
-            ("discord", "Discord", False),
-            ("epic_games_launcher", "Epic Games Launcher", False),
-            ("openrgb", "OpenRGB", False),
-            ("signalrgb", "SignalRGB", False),
-            ("vlc", "VLC Media Player", False),
-            ("malwarebytes", "Malwarebytes", False),
-            ("hwmonitor", "HWMonitor", False),
-            ("msi_afterburner", "MSI Afterburner", False),
-            ("occt", "OCCT", False),
-            ("cinebench", "Cinebench R23", False),
-            ("crystaldiskmark", "CrystalDiskMark", False),
-            ("crystaldiskinfo", "CrystalDiskInfo", False),
-            ("aida64", "AIDA64", False),
-            ("fancontrol", "FanControl", False),
-            ("cpuz", "CPU-Z", False),
-            ("gpuz", "GPU-Z", False),
-            ("heaven", "Unigine Heaven Benchmark", False),
-            ("valley", "Unigine Valley Benchmark", False),
-            ("superposition", "Unigine Superposition Benchmark", False),
-            ("revo", "Revo Uninstaller", False),
-        ]
-
-        for app_id, app_name, checked in other_apps:
-            checkbox = QCheckBox(app_name)
-            checkbox.setChecked(checked)
-            self.app_checkboxes[app_id] = checkbox
-            layout.addWidget(checkbox)
+            self._add_app_checkbox(layout, app)
 
     def setup_connections(self):
-        # Windows activation panel visibility
         self.activate_windows.toggled.connect(self.activate_windows_panel.setVisible)
-
-        # Authentic key panel visibility
         self.activate_windows_key.toggled.connect(self.authentic_key_panel.setVisible)
-
-        # App installer panel visibility
         self.run_app_installer.toggled.connect(self.app_installer_panel.setVisible)
-
-        # FurMark sub-options visibility
         self.furmark_checkbox.toggled.connect(self.toggle_furmark_options)
-
-        # FurMark test options visibility
         self.run_furmark_test.toggled.connect(self.furmark_test_options.setVisible)
 
     def toggle_furmark_options(self, checked):
@@ -380,89 +294,65 @@ class ScriptOptionsWindow(QMainWindow):
             self.run_furmark_test.setToolTip("")
 
     def format_product_key(self, text):
-        # Remove non-alphanumeric characters and convert to uppercase
-        raw = regexp.sub(r'[^A-Za-z0-9]', '', text).upper()
-        raw = raw[:25]  # Limit to 25 characters
+        raw = regexp.sub(r"[^A-Za-z0-9]", "", text).upper()
+        raw = raw[:25]
 
-        # Split into chunks of 5
-        chunks = [raw[i: i + 5] for i in range(0, len(raw), 5)]
-        formatted = '-'.join(chunks)
+        chunks = [raw[i:i + 5] for i in range(0, len(raw), 5)]
+        formatted = "-".join(chunks)
         cursor_position = len(formatted)
 
-        # update text field
-        self.windows_product_key.blockSignals(True)  # stop input temporarily
-        self.windows_product_key.setText(formatted)  # update text to the formatted string
-        self.windows_product_key.setCursorPosition(cursor_position)  # set cursor position to the end of string
-        self.windows_product_key.blockSignals(False)  # re-enable input
+        self.windows_product_key.blockSignals(True)
+        self.windows_product_key.setText(formatted)
+        self.windows_product_key.setCursorPosition(cursor_position)
+        self.windows_product_key.blockSignals(False)
+
+    def _parse_duration_minutes(self) -> int:
+        raw = self.furmark_duration.text().strip()
+        if raw.isdigit():
+            return max(1, int(raw))
+        return FurmarkOptions().duration_minutes
 
     def on_continue_clicked(self):
-        # Collect all options
-        self.task_options = {
-            "install_gpu_drivers": self.install_gpu_drivers.isChecked(),
-            "install_chipset_drivers": self.install_chipset_drivers.isChecked(),
-            "show_motherboard_driver_page": self.show_motherboard_driver_page.isChecked(),
-            "run_windows_tweaks": self.run_windows_tweaks.isChecked(),
-            "save_spec_sheet": self.save_spec_sheet.isChecked(),
-            "run_app_installer": self.run_app_installer.isChecked(),
-            "activate_windows": self.activate_windows.isChecked(),
-        }
+        options = ScriptOptions()
+        options.install_gpu_drivers = self.install_gpu_drivers.isChecked()
+        options.install_chipset_drivers = self.install_chipset_drivers.isChecked()
+        options.show_motherboard_driver_page = self.show_motherboard_driver_page.isChecked()
+        options.run_windows_tweaks = self.run_windows_tweaks.isChecked()
+        options.save_spec_sheet = self.save_spec_sheet.isChecked()
+        options.generate_ai_description = self.generate_ai_description.isChecked()
+        options.run_app_installer = self.run_app_installer.isChecked()
+        options.activate_windows = self.activate_windows.isChecked()
 
-        # Windows activation options
-        if self.activate_windows.isChecked():
-            self.task_options["activate_windows_massgrave"] = self.activate_windows_massgrave.isChecked()
-            self.task_options["activate_windows_key"] = self.activate_windows_key.isChecked()
-            if self.activate_windows_key.isChecked():
-                self.task_options["windows_product_key"] = self.windows_product_key.text()
+        if options.activate_windows:
+            if self.activate_windows_massgrave.isChecked():
+                options.activation_choice = ActivationChoice.MASSGRAVE
+            elif self.activate_windows_key.isChecked():
+                options.activation_choice = ActivationChoice.PRODUCT_KEY
+                options.windows_product_key = self.windows_product_key.text()
         else:
-            self.task_options["activate_windows_massgrave"] = False
-            self.task_options["activate_windows_key"] = False
-            self.task_options["windows_product_key"] = ""
+            options.activation_choice = ActivationChoice.NONE
 
-        self.task_options["apps"] = {}
+        options.selected_apps = {}
+        for app_id, checkbox in self.app_checkboxes.items():
+            options.selected_apps[app_id] = checkbox.isChecked() if options.run_app_installer else False
 
-        # Application installation options
-        if self.run_app_installer.isChecked():
-            for app_id, checkbox in self.app_checkboxes.items():
-                self.task_options["apps"][app_id] = checkbox.isChecked()
+        if (
+            options.run_app_installer
+            and options.selected_apps.get(AppId.FURMARK, False)
+            and self.run_furmark_test.isChecked()
+        ):
+            options.furmark.enabled = True
+            options.furmark.duration_minutes = self._parse_duration_minutes()
+            options.furmark.resolution = FurmarkResolution.from_display_text(self.furmark_resolution.currentText())
+            options.furmark.anti_aliasing = FurmarkAntiAliasing.from_display_text(
+                self.furmark_anti_aliasing.currentText()
+            )
 
-            # FurMark specific options
-            if self.furmark_checkbox.isChecked():
-                self.task_options["run_furmark_test"] = self.run_furmark_test.isChecked()
-                if self.run_furmark_test.isChecked():
-                    self.task_options["furmark_duration"] = self.furmark_duration.text()
-                    self.task_options["furmark_resolution"] = self.furmark_resolution.currentText()
-                    self.task_options["furmark_anti_aliasing"] = self.furmark_anti_aliasing.currentText()
-            else:
-                self.task_options["run_furmark_test"] = False
-                self.task_options["furmark_duration"] = ""
-                self.task_options["furmark_resolution"] = ""
-                self.task_options["furmark_anti_aliasing"] = ""
-        else:
-            # Clear all app options if app installer is unchecked
-            for app_id in self.app_checkboxes.keys():
-                self.task_options["apps"][app_id] = False
-            self.task_options["run_furmark_test"] = False
-            self.task_options["furmark_duration"] = ""
-            self.task_options["furmark_resolution"] = ""
-            self.task_options["furmark_anti_aliasing"] = ""
-
+        self.task_options = options
         self.close()
 
 
-def show_script_options_window():
-    """
-    Shows the GUI window for selecting script options.
-
-    :return: The task options selected by the user, in a Python dictionary
-
-    ## Example usage
-    ```python
-    import modules.ui as ui
-    options = ui.show_script_options_window()
-    print(options)  # prints the selected options as a dictionary
-    ```
-
-    """
+def show_script_options_window() -> ScriptOptions:
     app = QApplication(sys.argv)
     window = ScriptOptionsWindow(font="Segoe UI")
     window.show()

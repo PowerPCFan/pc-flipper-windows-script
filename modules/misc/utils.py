@@ -48,7 +48,7 @@ def download_large_file(
     chunk_size: int = 8192,
     headers: dict | None = None,
     timeout: int | None = None
-) -> None:
+) -> bool:
     try:
         with requests.get(url, stream=True, headers=headers, timeout=timeout) as r:
             r.raise_for_status()
@@ -56,8 +56,13 @@ def download_large_file(
                 for chunk in r.iter_content(chunk_size=chunk_size):
                     if chunk:
                         f.write(chunk)
+        return True
     except requests.exceptions.RequestException as e:
         print(f"{RED}Error downloading file: {e}{RESET}")
+        return False
+    except OSError as e:
+        print(f"{RED}Error writing file '{destination}': {e}{RESET}")
+        return False
 
 
 def get_user_choice(

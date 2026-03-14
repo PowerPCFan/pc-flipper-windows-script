@@ -61,7 +61,7 @@ def save(save_location: str = os.path.join(global_vars.CURRENT_USER_DESKTOP, "Sp
                 <h2>Network Information</h2>
                 <ul>
                     <li><strong>Local IP:</strong> {global_vars.LOCAL_IP}</li>
-                    <li><strong>Public IP:</strong> {global_vars.PUBLIC_IP}</li>
+                    <li><strong>Public IP:</strong> {global_vars.get_public_ip()}</li>
                 </ul>
             </body>
         </html>

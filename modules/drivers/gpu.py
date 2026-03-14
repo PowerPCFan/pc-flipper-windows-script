@@ -55,11 +55,15 @@ class GPUDrivers:
 
                 nvidia_driver = os.path.join(self.nvidia_driver_download_path, "setup.exe")
 
-                utils.download_large_file(
+                download_success = utils.download_large_file(
                     url=download_link,
                     destination=nvidia_driver,
                     timeout=10
                 )
+
+                if not download_success:
+                    print(f"{RED}Error: Nvidia GPU driver download failed. Skipping installer launch.{RESET}")
+                    return
 
                 print(f"{GREEN}Nvidia GPU drivers successfully downloaded.{RESET}")
 
@@ -80,7 +84,7 @@ class GPUDrivers:
 
         amd_drivers = os.path.join(self.amd_driver_download_path, "setup.exe")
 
-        utils.download_large_file(
+        download_success = utils.download_large_file(
             url=self.amd_driver_download_link,
             destination=amd_drivers,
             headers={
@@ -88,6 +92,10 @@ class GPUDrivers:
             },
             timeout=10
         )
+
+        if not download_success:
+            print(f"{RED}Error: AMD GPU driver download failed. Skipping installer launch.{RESET}")
+            return
 
         print(f"{GREEN}AMD GPU drivers successfully downloaded.{RESET}")
 
@@ -109,11 +117,15 @@ class GPUDrivers:
 
         intel_drivers = os.path.join(self.intel_arc_driver_download_path, "setup.exe")
 
-        utils.download_large_file(
+        download_success = utils.download_large_file(
             url=self.intel_driver_download_link,
             destination=intel_drivers,
             timeout=10
         )
+
+        if not download_success:
+            print(f"{RED}Error: Intel Arc GPU driver download failed. Skipping installer launch.{RESET}")
+            return
 
         print(f"{GREEN}Intel Arc GPU drivers successfully downloaded.{RESET}")
 
@@ -154,7 +166,7 @@ def install_gpu_drivers():
             drivers.install_amd_drivers()
         elif response == "nvidia":
             drivers.install_nvidia_drivers()
-        elif response == "intelarc":
+        elif response == "intel arc":
             drivers.install_intel_arc_drivers()
         elif response == "other":
             print("You selected \"Other\", which means your GPU is currently unsupported. Please download the appropriate drivers manually.")  # noqa: E501

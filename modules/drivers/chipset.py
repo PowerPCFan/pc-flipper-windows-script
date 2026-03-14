@@ -22,7 +22,7 @@ class ChipsetDrivers:
 
         driver_path = os.path.join(self.amd_driver_download_path, "chipset_amd.exe")
 
-        utils.download_large_file(
+        download_success = utils.download_large_file(
             url=self.amd_driver_download_link,
             destination=driver_path,
             headers={
@@ -30,6 +30,10 @@ class ChipsetDrivers:
             },
             timeout=10
         )
+
+        if not download_success:
+            print(f"{RED}Error: AMD chipset driver download failed. Skipping installer launch.{RESET}")
+            return
 
         print(f"{GREEN}AMD chipset drivers successfully downloaded. Starting installer...{RESET}")
         if os.path.exists(driver_path):
@@ -50,11 +54,15 @@ class ChipsetDrivers:
 
         driver_path = os.path.join(self.intel_driver_download_path, "chipset_intel.exe")
 
-        utils.download_large_file(
+        download_success = utils.download_large_file(
             url=self.intel_driver_download_link,
             destination=driver_path,
             timeout=10
         )
+
+        if not download_success:
+            print(f"{RED}Error: Intel chipset driver download failed. Skipping installer launch.{RESET}")
+            return
 
         print(f"{GREEN}Intel chipset drivers successfully downloaded. Starting installer...{RESET}")
         if os.path.exists(driver_path):

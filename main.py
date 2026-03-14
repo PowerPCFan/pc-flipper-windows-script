@@ -10,62 +10,56 @@ import modules.windows_activation.activate_windows    as activate_windows
 import modules.apps                                   as apps
 import modules.furmark                                as furmark
 import modules.spec_sheet.spec_sheet                  as spec_sheet
+import modules.localai                                as localai
 
 from modules.color.ansi_codes                         import RESET, RED, YELLOW, GREEN
 from modules.misc.enums                               import WindowsActivationMethod
+from modules.misc.models                              import ScriptOptions, ActivationChoice
 
 
-def invoke_tasks(tasks: dict[str, str | bool | dict]):
-    if tasks["install_gpu_drivers"]:
+def invoke_tasks(tasks: ScriptOptions):
+    if tasks.install_gpu_drivers:
         drivers.gpu.install_gpu_drivers()
 
-    if tasks["install_chipset_drivers"]:
+    if tasks.install_chipset_drivers:
         drivers.chipset.install_chipset_drivers()
 
-    if tasks["show_motherboard_driver_page"]:
+    if tasks.show_motherboard_driver_page:
         drivers.motherboard.show_motherboard_driver_page()
 
-    if tasks["run_windows_tweaks"]:
+    if tasks.run_windows_tweaks:
         tweaks = windows_tweaks.WindowsTweaks()
         tweaks.run()
 
-    if tasks["save_spec_sheet"]:
+    if tasks.save_spec_sheet:
         spec_sheet.save()
 
-    if tasks["activate_windows"]:
-        if tasks["activate_windows_massgrave"]:
+    if tasks.generate_ai_description:
+        localai.show_ai_description_generator_window()
+
+    if tasks.activate_windows:
+        if tasks.activation_choice == ActivationChoice.MASSGRAVE:
             activate_windows.activate(
                 method=WindowsActivationMethod.MASSGRAVE,
                 activation_key=None
             )
-        elif tasks["activate_windows_key"]:
-            product_key = tasks["windows_product_key"]
-
-            if isinstance(product_key, str):
-                activate_windows.activate(
-                    method=WindowsActivationMethod.ACTIVATION_KEY,
-                    activation_key=product_key
-                )
-            else:
-                raise ValueError("Your Windows Product Key is not a string. Please check your input.")
+        elif tasks.activation_choice == ActivationChoice.PRODUCT_KEY:
+            activate_windows.activate(
+                method=WindowsActivationMethod.ACTIVATION_KEY,
+                activation_key=tasks.windows_product_key
+            )
         else:
             raise ValueError("You selected to activate Windows but a valid activation method was not specified. Please check your input.")  # noqa: E501
 
-    if tasks["run_app_installer"]:
-        apps.install_selected_apps(selected_apps=tasks["apps"])  # type: ignore
+    if tasks.run_app_installer:
+        apps.install_selected_apps(selected_apps=tasks.selected_apps)
 
-    if tasks["run_furmark_test"]:
-        duration = tasks["furmark_duration"]
-        resolution = tasks["furmark_resolution"]
-        anti_aliasing = tasks["furmark_anti_aliasing"]
-
-        if isinstance(duration, str) and isinstance(resolution, str) and isinstance(anti_aliasing, str):
-            furmark.run_furmark_test(duration=int(duration), resolution=resolution, anti_aliasing=anti_aliasing)
-        else:
-            raise ValueError("The FurMark test parameters specified are not valid strings. This is likely an issue with the script and not your input.")  # noqa: E501
+    if tasks.furmark.enabled:
+        furmark.run_furmark_test(options=tasks.furmark)
 
 
 def cleanup():
+    localai.close_all_localai()
     utils.remove_if_exists(global_vars.SCRIPT_TEMP)
 
 
@@ -129,6 +123,8 @@ if __name__ == "__main__":
         )
 
         sys.exit(1)
+    finally:
+        cleanup()
 else:
     print(f"{YELLOW}This script is not meant to be run as a module. Exiting...{RESET}")
     sys.exit(1)
