@@ -1,5 +1,4 @@
 import zipfile
-import pathlib
 import subprocess
 import time
 import atexit
@@ -32,8 +31,7 @@ def close_all_localai() -> None:
 
 class LocalAI:
     def __init__(self) -> None:
-        # self.dir = gv.SCRIPT_TEMP_PATH / "localai"
-        self.dir = pathlib.Path("C:/Users/Charlie/deletethis/localai")
+        self.dir = gv.SCRIPT_TEMP_PATH / "localai"
         self.dir.mkdir(parents=True, exist_ok=True)
 
         self.gguf = self.dir / "llama-3.2-3b-instruct-q4_k_m.gguf"
