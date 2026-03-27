@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
 from modules.color.ansi_codes import RED, RESET, CYAN, GREEN
 import modules.misc.global_vars as gv
 from modules.misc.utils import download_large_file
+from modules.misc.blinkbin import upload_to_blinkbin
 
 
 _ACTIVE_LOCALAI: WeakSet["LocalAI"] = WeakSet()
@@ -260,11 +261,8 @@ STRICT CONSTRAINTS:
         try:
             self.server_process = subprocess.Popen(
                 cmd,
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.DEVNULL,
-                # print stdout and stderr to console for debugging
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
                 text=True
             )
             self._owns_server_process = True
@@ -382,6 +380,10 @@ class AIDescriptionGeneratorWindow(QMainWindow):
         self.copy_description_button.clicked.connect(self._copy_description)
         layout.addWidget(self.copy_description_button)
 
+        self.blinkbin_link_label = QLabel("")
+        self.blinkbin_link_label.setOpenExternalLinks(True)
+        layout.addWidget(self.blinkbin_link_label)
+
     def _add_spec_inputs(self, layout: QVBoxLayout):
         defaults = {
             "cpu": gv.CPU,
@@ -445,7 +447,15 @@ class AIDescriptionGeneratorWindow(QMainWindow):
 
             self.output_box.setPlainText(description)
             self.copy_description_button.setEnabled(True)
-            self.status_label.setText("Generated successfully.")
+            self.status_label.setText("Generated successfully. Uploading to BlinkBin...")
+            QApplication.processEvents()
+            url = upload_to_blinkbin(description)
+            if url:
+                self.blinkbin_link_label.setText(f'<a href="{url}">{url}</a>')
+                self.status_label.setText("Uploaded to BlinkBin!")
+            else:
+                self.blinkbin_link_label.setText("")
+                self.status_label.setText("BlinkBin upload failed.")
         finally:
             self.generate_button.setEnabled(True)
 
